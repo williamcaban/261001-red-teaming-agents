@@ -94,6 +94,26 @@ you also need to find-and-replace the literal hex strings inside every
   deliberately excluded. Don't add Red Hat product branding, version
   numbers, or roadmap specifics without the user explicitly asking for that
   framing shift.
+- **Where the newer technical slides come from.** Slides on adaptive red
+  teaming, guardrail governance, harness sandboxing, and adversary-in-the-middle
+  testing draw their methodology from the owner's internal briefings and
+  workspace notes, restated in open, vendor-neutral terms. Product names and
+  versions, roadmap dates, customer data, and internal benchmark numbers were
+  left out on purpose. Keep it that way. Cite only public sources on the slide.
+- **Harness and tool claims were verified against primary docs in September
+  2026**: Claude Code sandboxing (code.claude.com/docs/en/sandboxing), Codex
+  sandbox modes (developers.openai.com/codex/security), OpenCode permissions
+  (opencode.ai/docs/permissions), OpenClaw sandboxing
+  (docs.openclaw.ai/gateway/sandboxing), Hermes Agent security
+  (hermes-agent.nousresearch.com/docs/user-guide/security), garak
+  (github.com/NVIDIA/garak), Inspect sandboxing (inspect.aisi.org.uk), MCP
+  security best practices (modelcontextprotocol.io). Defaults change fast, so
+  re-verify before changing a row in the harness comparison table.
+- Some facts to keep straight: OpenCode's permissions mostly default to
+  `allow` and its docs describe no sandbox; Hermes skips dangerous-command
+  approval inside container backends on purpose; the layered-sandbox test
+  (Kata only, app sandbox only, both) is one agent and one test, so the slide
+  calls it a pattern, not a benchmark.
 
 ## Known fixed bugs (don't reintroduce)
 
@@ -108,13 +128,41 @@ you also need to find-and-replace the literal hex strings inside every
    which runs the file at `about:srcdoc`). It's safe to flip back to `true`
    once this is confirmed running on the real GitHub Pages domain, where
    deep-linkable slide URLs (`#/7`) would be a nice-to-have.
+3. **CSS beats SVG presentation attributes.** `.box-label` (15px) and
+   `.box-sub` (11px) override any `font-size="..."` or `fill="..."` attribute
+   on the same `<text>`. To change size or color, use inline `style`, for
+   example `style="font-size:12px; fill:#c43e2c;"`. This was the cause of
+   labels overflowing their boxes. `rx` on a rect with a diagram class is
+   overridden the same way.
+4. **Slide stage fit.** The stage is 1100x720 with `box-sizing: border-box`
+   on slides and `font-size: 26px` on `.reveal`. Keep every slide at or under
+   720px of scroll height, with headroom for fallback fonts. The tallest slide
+   is about 650px with Plex and about 690px with Arial and Courier.
+5. **Footnote size.** The theme's `.reveal p` rule beat `.footnote`, so use
+   `.reveal p.footnote` (already set). Do not shorten the selector.
+6. **Scale limits.** `minScale: 0.1` and `maxScale: 3` keep very small and
+   4K windows fitting. Do not remove them.
 
 ## Making content changes
 
 If asked to add/edit a slide: find the `<!-- SLIDE N: ... -->` HTML comment
-markers, which number every section in order — keep this numbering/labeling
-scheme in the comments (it's for maintainers reading the source, separate
-from the on-slide kicker text discussed above, which has no numbering).
+markers, which number every section in order and match the on-screen counter
+(`slideNumber: 'c/t'`). Renumber the comments when you insert or remove a
+slide. The comment scheme is for maintainers reading the source, separate
+from the on-slide kicker text discussed above, which has no numbering.
+
+Shared building blocks for new slides: `.data-table` (add `.compact` for
+dense tables), `ul.tight`, `.callout` (add `.defend` for the green variant),
+`.two-col`, and `.takeaway-list.compact`. Give every new slide an
+`<aside class="notes">` block.
+
+Full screen is built in. Reveal handles the `F` key, and a small
+`#fs-btn` button calls the Fullscreen API and hides itself while in full
+screen. Keep both.
+
+Before pushing, check each slide in a browser at a few window shapes. Look for
+`scrollHeight > 720`, SVG text outside its box or viewBox, and console
+errors. `python3 -m http.server` plus a headless browser is enough.
 
 If asked to add a new diagram: match the existing pattern — a `<div
 class="diagram-wrap">` wrapping a raw `<svg viewBox="...">`, reusing the

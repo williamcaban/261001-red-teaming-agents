@@ -103,19 +103,60 @@
 
   .reveal .progress { color: var(--attack); }
   .reveal .controls { color: var(--text-dim); }
+
+  .title-slide .hint { font-size: 0.5em; color: var(--text-dim); margin-top: 1.4em; font-family: 'IBM Plex Mono', monospace; }
+
+  .reveal ul.tight { margin-left: 0.2em; }
+  .reveal ul.tight li { font-size: 0.68em; line-height: 1.4; margin-bottom: 0.55em; }
+  .reveal ul.tight strong { font-weight: 600; }
+
+  .callout {
+    border-left: 3px solid var(--attack); background: var(--panel); border-radius: 0 6px 6px 0;
+    padding: 0.7em 1em; font-size: 0.66em; line-height: 1.45; margin-top: 0.9em;
+  }
+  .callout.defend { border-left-color: var(--defend); }
+  .takeaway-list.compact li { font-size: 0.8em; padding: 0.4em 0 0.4em 1.2em; margin-bottom: 0.55em; }
+
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 0.8em; font-size: 0.6em; }
+  .reveal .data-table th {
+    text-align: left; padding: 0.5em 0.8em; font-weight: 600; color: var(--text);
+    border-bottom: 2px solid var(--line);
+  }
+  .reveal .data-table td {
+    text-align: left; padding: 0.55em 0.8em; border-bottom: 1px solid var(--line);
+    vertical-align: top; line-height: 1.35; color: var(--text);
+  }
+  .reveal .data-table td:first-child { color: var(--text-dim); font-weight: 500; }
+  .data-table.compact { font-size: 0.58em; }
+  .data-table.compact td, .reveal .data-table.compact td { padding: 0.45em 0.7em; }
+  .reveal .data-table td.good { color: var(--defend); font-weight: 600; }
+  .reveal .data-table td.bad { color: var(--attack); font-weight: 600; }
+  .reveal .data-table td.mono { font-family: 'IBM Plex Mono', monospace; color: var(--text); font-weight: 500; white-space: nowrap; }
+  .reveal p.footnote { font-size: 0.56em; line-height: 1.5; }
+
+  .fs-btn {
+    position: fixed; top: 14px; right: 16px; z-index: 30; cursor: pointer;
+    font: 500 13px 'IBM Plex Mono', monospace; color: var(--text-dim);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 10px; opacity: 0.7;
+  }
+  .fs-btn:hover, .fs-btn:focus-visible { opacity: 1; color: var(--text); border-color: var(--text-dim); }
+  .fs-btn[hidden] { display: none; }
+  @media print { .fs-btn { display: none; } }
 </style>
 </head>
 <body>
+<button id="fs-btn" class="fs-btn" type="button" aria-label="Enter full screen" title="Full screen (F)">Full screen (F)</button>
 <div class="reveal">
 <div class="slides">
-
 <!-- SLIDE 1: Title -->
 <section class="title-slide">
   <div class="accent-bar"></div>
-  <div class="kicker">Mass Open — Agentic AI, Boston</div>
+  <div class="kicker">Mass Open, Agentic AI, Boston</div>
   <h1>Red Teaming Agents: The New Attack Surface of Tools and State</h1>
   <p class="subtitle">A practical threat model and mitigation pipeline for agentic AI systems</p>
   <p class="meta">William Caban</p>
+  <p class="hint">Press F for full screen. S opens speaker notes. ? lists shortcuts.</p>
   <aside class="notes">
     Open with the incident, not the title. Let the title card sit for a beat, then move straight into the hook.
   </aside>
@@ -153,13 +194,13 @@
       <text class="box-sub" x="100" y="145" text-anchor="middle">looks fine</text>
       <text class="box-sub" x="320" y="145" text-anchor="middle">looks fine</text>
       <text class="box-sub" x="540" y="145" text-anchor="middle">looks fine</text>
-      <text class="box-sub" x="740" y="145" text-anchor="middle" fill="#c43e2c">this is the attack</text>
+      <text style="fill:#c43e2c;" class="box-sub" x="740" y="145" text-anchor="middle">this is the attack</text>
     </svg>
   </div>
   <p style="margin-top:0.8em; color:var(--text-dim); font-size:0.65em;">Your chatbot red-teaming checklist does not cover this.</p>
 </section>
 
-<!-- SLIDE 3: Why different -->
+<!-- SLIDE 3: Why this is a different problem -->
 <section>
   <div class="kicker">Why this is a different problem</div>
   <h2>One prompt, one output vs. a loop with branches</h2>
@@ -205,7 +246,7 @@
       <line class="diag-arrow-attack" x1="560" y1="260" x2="574" y2="122" stroke-dasharray="3,3" marker-end="url(#a2r)"/>
       <line class="diag-arrow-attack" x1="700" y1="260" x2="700" y2="220" stroke-dasharray="3,3" marker-end="url(#a2r)"/>
       <line class="diag-arrow-attack" x1="840" y1="260" x2="826" y2="122" stroke-dasharray="3,3" marker-end="url(#a2r)"/>
-      <text class="box-sub" x="700" y="312" text-anchor="middle" style="font-size:12px" fill="#c43e2c">attack entry points</text>
+      <text class="box-sub" x="700" y="312" text-anchor="middle" style="font-size:12px; fill:#c43e2c;">attack entry points</text>
     </svg>
   </div>
 </section>
@@ -234,7 +275,7 @@
   <p class="footnote">Each step can look fine in isolation. Only the trajectory is the attack.</p>
 </section>
 
-<!-- SLIDE 4b: Alignment vs Guardrails -->
+<!-- SLIDE 5: Alignment vs guardrails -->
 <section>
   <div class="kicker">Why alignment alone doesn't close this</div>
   <h2>Alignment and guardrails solve different problems</h2>
@@ -277,7 +318,7 @@
   <p class="footnote">A well-aligned model still needs engineered, auditable controls for the three threat surfaces on the last slide. Neither tool substitutes for the other.</p>
 </section>
 
-<!-- SLIDE 5: What works now -->
+<!-- SLIDE 6: Standalone vs hybrid attacker -->
 <section>
   <div class="kicker">What actually works right now</div>
   <h2>Standalone attacker vs. hybrid planner + controller</h2>
@@ -289,7 +330,7 @@
       <rect class="diag-rect" x="110" y="80" width="150" height="60" rx="6"/>
       <text class="box-label" x="185" y="115" text-anchor="middle">Attacker LLM</text>
       <path class="diag-arrow" d="M260,95 C 310,70 310,150 260,125" marker-end="url(#a3)"/>
-      <text class="box-sub" x="185" y="185" text-anchor="middle" fill="#c43e2c">stalls after a few steps</text>
+      <text style="fill:#c43e2c;" class="box-sub" x="185" y="185" text-anchor="middle">stalls after a few steps</text>
 
       <text class="box-label" x="680" y="30" text-anchor="middle" font-weight="600">Hybrid approach</text>
       <rect class="diag-rect-defend" x="580" y="60" width="150" height="55" rx="6"/>
@@ -303,12 +344,99 @@
       <rect class="diag-rect" x="795" y="155" width="90" height="55" rx="6"/>
       <text class="box-label" x="840" y="187" text-anchor="middle" font-size="12">Target</text>
       <path class="diag-arrow" d="M840,155 C 840,100 760,70 735,78" marker-end="url(#a3)"/>
-      <text class="box-sub" x="655" y="245" text-anchor="middle" fill="#2d7a72">sustains multi-stage campaigns</text>
+      <text style="fill:#2d7a72;" class="box-sub" x="655" y="245" text-anchor="middle">sustains multi-stage campaigns</text>
     </svg>
   </div>
 </section>
 
-<!-- SLIDE 6: Section divider -->
+<!-- SLIDE 7: Rule of two -->
+<section>
+  <div class="kicker">Design principle for agent architecture</div>
+  <h2>An agent should hold at most two of three powers</h2>
+  <div class="two-col" style="align-items:center; margin-top:0.2em;">
+    <div style="flex:0 0 44%;">
+      <div class="diagram-wrap" style="margin-top:0;">
+        <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="150" cy="120" r="100" fill="#c43e2c" fill-opacity="0.10" stroke="#c43e2c" stroke-width="1.6"/>
+          <circle cx="270" cy="120" r="100" fill="#93700f" fill-opacity="0.10" stroke="#93700f" stroke-width="1.6"/>
+          <circle cx="210" cy="225" r="100" fill="#2d7a72" fill-opacity="0.10" stroke="#2d7a72" stroke-width="1.6"/>
+          <text class="box-label" x="98" y="104" text-anchor="middle">Untrusted</text>
+          <text class="box-label" x="98" y="124" text-anchor="middle">input</text>
+          <text class="box-label" x="322" y="104" text-anchor="middle">Sensitive</text>
+          <text class="box-label" x="322" y="124" text-anchor="middle">access</text>
+          <text class="box-label" x="210" y="290" text-anchor="middle">Outward</text>
+          <text class="box-label" x="210" y="310" text-anchor="middle">action</text>
+          <text class="box-label" x="210" y="146" text-anchor="middle" style="font-weight:600; fill:#c43e2c;">needs</text>
+          <text class="box-label" x="210" y="166" text-anchor="middle" style="font-weight:600; fill:#c43e2c;">a gate</text>
+        </svg>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <ul class="tight">
+        <li><strong>Untrusted input.</strong> Web pages, issues, dependencies, tool results.</li>
+        <li><strong>Sensitive access.</strong> Private data, credentials, internal systems.</li>
+        <li><strong>Outward action.</strong> State changes, messages, network calls.</li>
+      </ul>
+      <div class="callout">Need all three in one session? Put a human approval or a validation step in the path. That step cannot depend on the model's own judgment.</div>
+    </div>
+  </div>
+  <p class="footnote">Simon Willison named the combination the lethal trifecta (June 2025). Meta's Agents Rule of Two (October 2025) turns it into a design constraint.</p>
+  <aside class="notes">
+    Walk the three powers and ask which of the room's agents hold all three. Most coding agents do by default: they read issues and repos, hold tokens, and run network commands.
+    The fix is to remove one power per session or insert a gate that does not rely on the model. A research agent loses outward action. A browsing agent loses sensitive access.
+  </aside>
+</section>
+
+<!-- SLIDE 8: Reader and actor split -->
+<section>
+  <div class="kicker">Architecture pattern</div>
+  <h2>Read with one model, act with another</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 296" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="r8" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="50" width="150" height="60" rx="6"/>
+      <text class="box-label" x="95" y="86" text-anchor="middle">User request</text>
+
+      <rect class="diag-rect-defend" x="230" y="40" width="210" height="80" rx="6"/>
+      <text class="box-label" x="335" y="70" text-anchor="middle">Planner model</text>
+      <text class="box-sub" x="335" y="92" text-anchor="middle">writes the plan</text>
+      <text class="box-sub" x="335" y="108" text-anchor="middle">trusted input only</text>
+
+      <rect class="diag-rect-attack" x="20" y="210" width="150" height="60" rx="6"/>
+      <text class="box-label" x="95" y="246" text-anchor="middle">Untrusted data</text>
+
+      <rect class="diag-rect" x="230" y="200" width="210" height="80" rx="6"/>
+      <text class="box-label" x="335" y="230" text-anchor="middle">Quarantined model</text>
+      <text class="box-sub" x="335" y="252" text-anchor="middle">reads the data</text>
+      <text class="box-sub" x="335" y="268" text-anchor="middle">has no tools</text>
+
+      <rect class="diag-rect-defend" x="500" y="125" width="220" height="80" rx="6"/>
+      <text class="box-label" x="610" y="155" text-anchor="middle">Interpreter</text>
+      <text class="box-sub" x="610" y="177" text-anchor="middle">checks policy on each call</text>
+      <text class="box-sub" x="610" y="193" text-anchor="middle">tracks each value's source</text>
+
+      <rect class="diag-rect" x="780" y="125" width="100" height="80" rx="6"/>
+      <text class="box-label" x="830" y="170" text-anchor="middle">Tools</text>
+
+      <line class="diag-arrow" x1="170" y1="80" x2="226" y2="80" marker-end="url(#r8)"/>
+      <line class="diag-arrow" x1="170" y1="240" x2="226" y2="240" marker-end="url(#r8)"/>
+      <line class="diag-arrow" x1="440" y1="90" x2="496" y2="148" marker-end="url(#r8)"/>
+      <line class="diag-arrow" x1="440" y1="240" x2="496" y2="184" marker-end="url(#r8)"/>
+      <line class="diag-arrow" x1="720" y1="165" x2="776" y2="165" marker-end="url(#r8)"/>
+
+      <text class="box-sub" x="500" y="252" style="font-size:13px; fill:#c43e2c;">values only, never instructions</text>
+    </svg>
+  </div>
+  <p class="footnote">Pattern from CaMeL (Google DeepMind, 2025). Untrusted text can change a plan's values, never the plan. Example policy: a value from an email cannot become the recipient of a send action.</p>
+  <aside class="notes">
+    This is the strongest structural defense in the literature, and it works by construction rather than by detection.
+    The planner never sees untrusted text, so injected instructions cannot alter control flow. The quarantined model can read anything but cannot call a tool.
+    Every value carries its provenance, so policy can say where a value is allowed to flow. Be honest about the cost: you give up agents that rewrite their own plan from what they read, because some tasks need the plan to adapt to what the data says.
+  </aside>
+</section>
+
+<!-- SLIDE 9: Section divider: finding to control -->
 <section>
   <div class="section-divider">
     <h1 style="font-size:1.6em;">From finding to demonstrated control</h1>
@@ -322,7 +450,7 @@
   </div>
 </section>
 
-<!-- SLIDE 7: 5a pipeline -->
+<!-- SLIDE 10: Finding to detector -->
 <section>
   <div class="kicker">Finding to engineering requirement</div>
   <h2>A finding is a spec for a detector</h2>
@@ -359,7 +487,31 @@
   <p class="footnote">Two tool types answer different questions; both findings converge into one record.</p>
 </section>
 
-<!-- SLIDE 7b: Four types of guardrails -->
+<!-- SLIDE 11: Tool by layer under test -->
+<section>
+  <div class="kicker">Tooling</div>
+  <h2>Match the tool to the layer under test</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Layer under test</th><th>Tool</th><th>Question it answers</th><th>Typical output</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Model endpoint, guardrails included</td><td class="mono">garak</td><td>Which known attack classes get through?</td><td>Per-probe pass or fail, attack success rate</td></tr>
+      <tr><td>Application: prompts, RAG, policies</td><td class="mono">promptfoo</td><td>Does the app hold under generated attacks and assertions on every change?</td><td>Test matrix with pass or fail per case</td></tr>
+      <tr><td>Models and agents on benchmarks</td><td class="mono">inspect-ai</td><td>How does it score on safety, security, and agentic tasks, inside a sandbox?</td><td>Logs, scores, transcripts per sample</td></tr>
+      <tr><td>Agent with real tools</td><td class="mono">MiDojo</td><td>Does the real agent resist payloads in the data and tools it reads?</td><td>Utility and security scores per task pair</td></tr>
+      <tr><td>Behavior under pressure</td><td class="mono">Petri</td><td>Does the model deceive, flatter, or help a harmful user across many turns?</td><td>Judge-scored transcripts for human review</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">garak: NVIDIA, Apache 2.0. promptfoo: MIT, joined OpenAI in March 2026 and stayed open source. Inspect: UK AI Security Institute, with a community catalog in inspect_evals. One tool is not a program. Each answers one question, and the record has to hold results from all of them.</p>
+  <aside class="notes">
+    Do not pitch a favorite. The point is that each tool sees a different layer.
+    garak probes the endpoint, so it tests guardrails as deployed. promptfoo is config-driven and fits CI for the application layer. Inspect gives you task, solver, and scorer structure with sandboxed environments, plus a large community catalog.
+    MiDojo is the one that tests an agent with its real tools. Petri audits dispositions such as deception and sycophancy, which an attack-success number does not capture.
+  </aside>
+</section>
+
+<!-- SLIDE 12: Four types of guardrails -->
 <section>
   <div class="kicker">What guardrails are in place?</div>
   <h2>Four types, rigid rules to flexible judgment</h2>
@@ -384,7 +536,7 @@
   <p class="footnote">Layer more than one type. No single type catches everything on its own.</p>
 </section>
 
-<!-- SLIDE 7c: Six checkpoints -->
+<!-- SLIDE 13: Six checkpoints -->
 <section>
   <div class="kicker">Where guardrails get placed</div>
   <h2>Six checkpoints map onto the three threat surfaces</h2>
@@ -413,16 +565,55 @@
       <text class="box-label" x="475" y="132" text-anchor="middle" font-size="13">Output</text>
 
       <rect x="30" y="268" width="500" height="28" rx="5" fill="none" stroke="#5b6472" stroke-dasharray="4,3"/>
-      <text class="box-sub" x="280" y="286" text-anchor="middle" font-size="11">Agentic — monitors sub-agents, breaks loops and goal drift</text>
+      <text class="box-sub" x="280" y="286" text-anchor="middle" font-size="11">Agentic: monitors sub-agents, breaks loops and goal drift</text>
 
       <rect x="20" y="0" width="900" height="298" rx="10" fill="none" stroke="#93700f" stroke-width="1.6" stroke-dasharray="2,4"/>
-      <text class="box-sub" x="905" y="20" text-anchor="end" font-size="11" fill="#93700f">Infrastructure — sandbox boundary</text>
+      <text style="fill:#93700f;" class="box-sub" x="905" y="20" text-anchor="end" font-size="11">Infrastructure: sandbox boundary</text>
     </svg>
   </div>
   <p class="footnote">Tool checkpoint catches tool misuse · Infrastructure sandbox catches privilege escalation · Retrieval and Input catch context poisoning.</p>
 </section>
 
-<!-- SLIDE 8: 5b trade-off spectrum -->
+<!-- SLIDE 14: Layers only narrow -->
+<section>
+  <div class="kicker">Who owns which control</div>
+  <h2>Lower layers can narrow policy, never relax it</h2>
+  <div class="two-col" style="align-items:center; margin-top:0.2em;">
+    <div style="flex:0 0 44%;">
+      <div class="diagram-wrap" style="margin-top:0;">
+        <svg viewBox="0 0 460 330" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="440" height="310" rx="12" fill="none" stroke="#5b6472" stroke-width="1.6"/>
+          <text class="box-label" x="26" y="38" style="font-size:14px;">Organization baseline</text>
+          <rect x="50" y="60" width="360" height="250" rx="10" fill="none" stroke="#5b6472" stroke-width="1.6"/>
+          <text class="box-label" x="66" y="88" style="font-size:14px;">Application controls</text>
+          <rect x="90" y="110" width="280" height="190" rx="10" fill="none" stroke="#5b6472" stroke-width="1.6"/>
+          <text class="box-label" x="106" y="138" style="font-size:14px;">Agent and skill controls</text>
+          <rect x="130" y="160" width="200" height="130" rx="8" fill="#2d7a72" fill-opacity="0.10" stroke="#2d7a72" stroke-width="1.6"/>
+          <text class="box-label" x="146" y="188" style="font-size:14px;">Tool and action</text>
+          <text class="box-sub" x="146" y="222" style="font-size:12px;">validate arguments</text>
+          <text class="box-sub" x="146" y="242" style="font-size:12px;">before execution</text>
+        </svg>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <ul class="tight">
+        <li><strong>Organization baseline.</strong> Platform team. PII, injection, and language checks that are always on.</li>
+        <li><strong>Application controls.</strong> App team. Topic limits and domain rules.</li>
+        <li><strong>Agent and skill controls.</strong> Per-agent guardrails and sandbox policy.</li>
+        <li><strong>Tool and action controls.</strong> Parameters checked before the call runs.</li>
+      </ul>
+      <div class="callout defend">A lower layer can add checks or tighten limits. It cannot switch off what a higher layer set.</div>
+    </div>
+  </div>
+  <p class="footnote">Same shape as IAM boundaries and network policy: an explicit deny higher up wins.</p>
+  <aside class="notes">
+    Centralized enforcement alone never fits every application, and fully local enforcement drifts. Splitting ownership solves both.
+    The platform team sets what must hold everywhere. Application teams own domain risk. Agent and tool layers sit closest to the action.
+    The rule that makes this auditable: a layer can only narrow. If a team could relax the baseline, the baseline would be a suggestion.
+  </aside>
+</section>
+
+<!-- SLIDE 15: Auditability vs coverage -->
 <section>
   <div class="kicker">Guardrail design trade-offs</div>
   <h2>Auditability vs. coverage is a real trade-off</h2>
@@ -431,8 +622,8 @@
       <line x1="60" y1="130" x2="840" y2="130" stroke="#d6dbe2" stroke-width="2"/>
       <text class="box-sub" x="60" y="155">low auditability</text>
       <text class="box-sub" x="780" y="155">high auditability</text>
-      <text class="box-sub" x="60" y="175" fill="#5b6472">high coverage, high cost</text>
-      <text class="box-sub" x="700" y="175" fill="#5b6472">narrow, cheap, explainable</text>
+      <text style="fill:#5b6472;" class="box-sub" x="60" y="175">high coverage, high cost</text>
+      <text style="fill:#5b6472;" class="box-sub" x="700" y="175">narrow, cheap, explainable</text>
 
       <circle cx="150" cy="130" r="9" fill="#c43e2c"/>
       <text class="box-label" x="150" y="100" text-anchor="middle" font-size="13">LLM-as-judge</text>
@@ -442,14 +633,14 @@
 
       <circle cx="770" cy="130" r="9" fill="#2d7a72"/>
       <text class="box-label" x="770" y="100" text-anchor="middle" font-size="13">Deterministic rules</text>
-      <text class="box-sub" x="770" y="40" text-anchor="middle" fill="#2d7a72">highest-stakes gates belong here</text>
+      <text style="fill:#2d7a72;" class="box-sub" x="770" y="40" text-anchor="middle">highest-stakes gates belong here</text>
       <line x1="770" y1="48" x2="770" y2="118" stroke="#2d7a72" stroke-width="1.3" stroke-dasharray="3,3"/>
     </svg>
   </div>
   <p class="footnote">Programmable, rule-based policy (e.g. Colang / NeMo Guardrails) is one open-source example of the deterministic end.</p>
 </section>
 
-<!-- SLIDE 9: 5c remediation chain -->
+<!-- SLIDE 16: Proving the control holds -->
 <section>
   <div class="kicker">Demonstrating remediation</div>
   <h2>Proving the control holds, not just claiming it</h2>
@@ -485,7 +676,7 @@
   <p class="footnote">The trace loop back to Finding is itself evidence that feeds future findings.</p>
 </section>
 
-<!-- SLIDE 9b: ASR escalation ladder -->
+<!-- SLIDE 17: Escalation ladder -->
 <section>
   <div class="kicker">Are those guardrails working?</div>
   <h2>Measure with escalating pressure, not one static test</h2>
@@ -499,7 +690,563 @@
   <p class="footnote">Attack success rate = share of probes that bypass the guardrail. Lower is stronger. Each stage runs only if the prior one was blocked, so the ladder shows exactly where coverage actually ends.</p>
 </section>
 
-<!-- SLIDE 10: 5d loop -->
+<!-- SLIDE 18: Adaptive attack loop -->
+<section>
+  <div class="kicker">Adaptive red teaming</div>
+  <h2>Escalate when the defense holds, stop when it breaks</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 318" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="q18" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect-attack" x="20" y="115" width="150" height="76" rx="6"/>
+      <text class="box-label" x="95" y="148" text-anchor="middle">Attack taxonomy</text>
+      <text class="box-sub" x="95" y="170" text-anchor="middle">harm categories</text>
+
+      <rect class="diag-rect" x="215" y="115" width="190" height="76" rx="6"/>
+      <text class="box-label" x="310" y="148" text-anchor="middle">Next strategy</text>
+      <text class="box-sub" x="310" y="170" text-anchor="middle">baseline to dynamic</text>
+
+      <rect class="diag-rect" x="450" y="115" width="150" height="76" rx="6"/>
+      <text class="box-label" x="525" y="148" text-anchor="middle">Target system</text>
+      <text class="box-sub" x="525" y="170" text-anchor="middle">guardrails included</text>
+
+      <rect class="diag-rect-defend" x="645" y="115" width="235" height="76" rx="6"/>
+      <text class="box-label" x="762" y="140" text-anchor="middle">Response classifier</text>
+      <text class="box-sub" x="762" y="160" text-anchor="middle">complied, rejected,</text>
+      <text class="box-sub" x="762" y="176" text-anchor="middle">alternative, other</text>
+
+      <line class="diag-arrow" x1="170" y1="153" x2="211" y2="153" marker-end="url(#q18)"/>
+      <line class="diag-arrow" x1="405" y1="153" x2="446" y2="153" marker-end="url(#q18)"/>
+      <line class="diag-arrow" x1="600" y1="153" x2="641" y2="153" marker-end="url(#q18)"/>
+
+      <path class="diag-arrow" d="M762,111 V78 Q762,60 744,60 H328 Q310,60 310,78 V108" marker-end="url(#q18)"/>
+      <rect x="410" y="47" width="250" height="26" rx="13" fill="#f7f8fa"/>
+      <text class="box-sub" x="535" y="65" text-anchor="middle" style="font-size:12px;">rejected or deflected: escalate</text>
+
+      <rect class="diag-rect-attack" x="645" y="250" width="235" height="60" rx="6"/>
+      <text class="box-label" x="762" y="285" text-anchor="middle">Complied: attack success</text>
+      <line class="diag-arrow-attack" x1="762" y1="195" x2="762" y2="246" marker-end="url(#q18)"/>
+
+      <text class="box-sub" x="310" y="222" text-anchor="middle" style="font-size:12px;">override, augmentation,</text>
+      <text class="box-sub" x="310" y="240" text-anchor="middle" style="font-size:12px;">translation, dynamic rewrite</text>
+    </svg>
+  </div>
+  <p class="footnote">One classifier scores every response the same way, so strategies stay comparable. The last rung uses a challenger model that rewrites the prompt from the target's refusals. garak (atkgen, TAP-style probes) and promptfoo (iterative and tree strategies) implement this family.</p>
+  <aside class="notes">
+    A static prompt list tests the easiest attacks. Adaptive campaigns use the target's answers as feedback.
+    Each prompt starts at baseline and only moves up a rung if the target refused or deflected. A compliant answer stops the escalation and counts as a success.
+    The result is the hardest attack your system currently needs to survive, plus the exact rung where defenses give out. The consistent classifier matters: without it, strategy-to-strategy comparisons are noise.
+  </aside>
+</section>
+
+<!-- SLIDE 19: Domain-aware attack datasets -->
+<section>
+  <div class="kicker">Domain-aware red teaming</div>
+  <h2>Turn your policies into your attack dataset</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="d19" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="50" width="140" height="76" rx="6"/>
+      <text class="box-label" x="90" y="83" text-anchor="middle">Policies</text>
+      <text class="box-sub" x="90" y="105" text-anchor="middle">harm categories</text>
+
+      <rect class="diag-rect" x="190" y="50" width="170" height="76" rx="6"/>
+      <text class="box-label" x="275" y="83" text-anchor="middle">Challenger LLM</text>
+      <text class="box-sub" x="275" y="105" text-anchor="middle">per category and concern</text>
+
+      <rect class="diag-rect-attack" x="390" y="50" width="160" height="76" rx="6"/>
+      <text class="box-label" x="470" y="83" text-anchor="middle">Attack dataset</text>
+      <text class="box-sub" x="470" y="105" text-anchor="middle">structured, versioned</text>
+
+      <rect class="diag-rect" x="580" y="50" width="150" height="76" rx="6"/>
+      <text class="box-label" x="655" y="83" text-anchor="middle">Scanner</text>
+      <text class="box-sub" x="655" y="105" text-anchor="middle">garak, promptfoo</text>
+
+      <rect class="diag-rect-defend" x="760" y="50" width="130" height="76" rx="6"/>
+      <text class="box-label" x="825" y="83" text-anchor="middle">Report</text>
+      <text class="box-sub" x="825" y="105" text-anchor="middle">ASR by category</text>
+
+      <line class="diag-arrow" x1="160" y1="88" x2="186" y2="88" marker-end="url(#d19)"/>
+      <line class="diag-arrow" x1="360" y1="88" x2="386" y2="88" marker-end="url(#d19)"/>
+      <line class="diag-arrow" x1="550" y1="88" x2="576" y2="88" marker-end="url(#d19)"/>
+      <line class="diag-arrow" x1="730" y1="88" x2="756" y2="88" marker-end="url(#d19)"/>
+
+      <text class="box-sub" x="275" y="152" text-anchor="middle" style="font-size:12px;">varied by region, language, style</text>
+
+      <rect class="diag-rect" x="390" y="190" width="160" height="60" rx="6" stroke-dasharray="3,3"/>
+      <text class="box-label" x="470" y="216" text-anchor="middle" style="font-size:14px;">Hand-written cases</text>
+      <text class="box-sub" x="470" y="236" text-anchor="middle">bring your own</text>
+      <line class="diag-arrow" x1="470" y1="190" x2="470" y2="130" marker-end="url(#d19)"/>
+      <text class="box-sub" x="486" y="166" style="font-size:12px;">reviewed before use</text>
+    </svg>
+  </div>
+  <div class="callout">Example: a healthcare provider adds patient-data privacy, diagnostic misinformation, and off-label advice. None of them appear in a generic scan.</div>
+  <p class="footnote">OWASP, NIST, and ATLAS tell you where to start. Your policies tell you what matters in your environment.</p>
+  <aside class="notes">
+    Generic taxonomies are necessary and not sufficient. The domain-specific risks are the ones a bank or a hospital actually cares about.
+    Write each policy as a category with a plain-language description. A challenger model generates attack prompts per category and varies them by region, language, and style. Review them, version the dataset, and feed the scanner.
+    Hand-written cases from your security team merge into the same dataset. Both paths produce one run and one report.
+  </aside>
+</section>
+
+<!-- SLIDE 20: Evidence quality -->
+<section>
+  <div class="kicker">Evidence quality</div>
+  <h2>Not every number is evidence</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Kind</th><th>Examples</th><th>How to treat it</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Direct measurement</td><td>Attack success rate, block rate, false positive rate, latency overhead</td><td>Computed from guardrail decisions and probe results. Safe to gate a release on.</td></tr>
+      <tr><td>Outcome proxy</td><td>Re-prompt rate, session completion, tool failure correlation</td><td>Advisory only. Correlation in traces is not proof of causation.</td></tr>
+    </tbody>
+  </table>
+  <ul class="tight" style="margin-top:0.8em;">
+    <li>Version every metric definition and link it to its source signal.</li>
+    <li>Show data freshness next to the number.</li>
+    <li>Report uncovered probes as gaps. Never pass them by omission.</li>
+    <li>Mark payloads that never reached the agent as not applicable, not as a pass.</li>
+  </ul>
+  <p class="footnote">A defense that blocks attacks by making the agent useless is not a defense. Report utility next to security.</p>
+  <aside class="notes">
+    High-stakes teams get burned by confident numbers with no provenance. Separate what you measured from what you inferred.
+    The reachability rule is the one most people miss: if an injected payload never reached the agent, the run says nothing about resistance. Count it as not applicable.
+    The same discipline applies to coverage. A probe you did not run is a gap in the report, not a pass.
+  </aside>
+</section>
+
+<!-- SLIDE 21: Guardrail package as a release -->
+<section>
+  <div class="kicker">Promoting a control to production</div>
+  <h2>Treat a guardrail package like a release</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="p21" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="40" width="240" height="150" rx="8"/>
+      <text class="box-label" x="140" y="76" text-anchor="middle">Catalog definition</text>
+      <text class="box-sub" x="140" y="108" text-anchor="middle" style="font-size:12px;">reusable and versioned</text>
+      <text class="box-sub" x="140" y="130" text-anchor="middle" style="font-size:12px;">any change is a new version</text>
+      <text class="box-sub" x="140" y="152" text-anchor="middle" style="font-size:12px;">draft, published, deprecated</text>
+
+      <rect class="diag-rect-defend" x="330" y="40" width="240" height="150" rx="8"/>
+      <text class="box-label" x="450" y="76" text-anchor="middle">Scoped package</text>
+      <text class="box-sub" x="450" y="108" text-anchor="middle" style="font-size:12px;">one app or agent</text>
+      <text class="box-sub" x="450" y="130" text-anchor="middle" style="font-size:12px;">evaluation gate</text>
+      <text class="box-sub" x="450" y="152" text-anchor="middle" style="font-size:12px;">two approvers</text>
+
+      <rect class="diag-rect" x="640" y="40" width="240" height="150" rx="8"/>
+      <text class="box-label" x="760" y="76" text-anchor="middle">Runtime instance</text>
+      <text class="box-sub" x="760" y="108" text-anchor="middle" style="font-size:12px;">deployed and monitored</text>
+      <text class="box-sub" x="760" y="130" text-anchor="middle" style="font-size:12px;">drift detection</text>
+      <text class="box-sub" x="760" y="152" text-anchor="middle" style="font-size:12px;">rollback to last approved</text>
+
+      <line class="diag-arrow" x1="260" y1="115" x2="326" y2="115" marker-end="url(#p21)"/>
+      <line class="diag-arrow" x1="570" y1="115" x2="636" y2="115" marker-end="url(#p21)"/>
+
+      <text class="box-sub" x="450" y="240" text-anchor="middle" style="font-size:14px;">Every promotion records who approved what, against which evidence.</text>
+    </svg>
+  </div>
+  <p class="footnote">Thresholds are set per environment with a named owner. The package author cannot be the only approver. Adapting a definition creates a new package, which needs fresh evidence.</p>
+  <aside class="notes">
+    This is change management applied to safety controls. A definition is reusable and immutable per version.
+    A package scopes it to one application and has to pass an evaluation gate with thresholds for false positives, false negatives, attack success, and latency. Two people approve.
+    At runtime, drift detection watches for configuration changes, and rollback means reapplying the last approved immutable package, not editing in place.
+  </aside>
+</section>
+
+<!-- SLIDE 22: Section divider: harness and tools -->
+<section>
+  <div class="section-divider">
+    <h1 style="font-size:1.6em;">Where the harness meets the world</h1>
+    <p style="color:var(--text-dim); max-width:30em; margin-bottom:1em;">Three questions to ask about any agent harness:</p>
+    <ul class="takeaway-list" style="font-size:0.75em;">
+      <li>What untrusted content does it read?</li>
+      <li>What can it run, and where does that code execute?</li>
+      <li>What credentials and networks can that code reach?</li>
+    </ul>
+  </div>
+  <aside class="notes">
+    A harness is the program around the model: the loop, the tool runtime, the permissions. Claude Code, Codex, OpenCode, OpenClaw, and Hermes Agent are all harnesses.
+    The model can be well behaved and the harness can still be the weak point, because the harness decides what the model's output is allowed to do.
+  </aside>
+</section>
+
+<!-- SLIDE 23: Harness attack surface -->
+<section>
+  <div class="kicker">Agent harnesses</div>
+  <h2>A harness runs untrusted text with your permissions</h2>
+  <div class="two-col" style="align-items:flex-start; margin-top:0.4em;">
+    <div>
+      <ul class="tight">
+        <li>It reads issues, READMEs, dependencies, web pages, and tool output.</li>
+        <li>It runs shell commands, installs packages, and executes generated code.</li>
+        <li>It inherits your files, tokens, SSH keys, and network access.</li>
+      </ul>
+      <p style="font-size:0.6em; color:var(--text-dim);">Claude Code, Codex, OpenCode, OpenClaw, and Hermes Agent differ in the details. They share this profile.</p>
+    </div>
+    <div>
+      <div class="callout">
+        <strong>May 2026: jqwik 1.10.0.</strong> The maintainer shipped a hidden instruction telling coding agents to delete the project's tests. ANSI escape codes hid it from the terminal. One agent flagged it and refused. A refusal is model behavior. It is not a boundary.
+      </div>
+    </div>
+  </div>
+  <p class="footnote">Source: Snyk and TechSpot reporting on jqwik 1.10.0, published May 25, 2026.</p>
+  <aside class="notes">
+    The maintainer wrote the payload on purpose, as protest. It reached agents through ordinary test output, so any pipeline that fed that output back to a model was exposed.
+    The agent that refused did the right thing, and that is the problem with relying on it. Refusal depends on the model, the prompt, and the day. Deny-by-default file access would have made the delete fail regardless.
+  </aside>
+</section>
+
+<!-- SLIDE 24: Sandbox boundary modes -->
+<section>
+  <div class="kicker">Where is the boundary?</div>
+  <h2>Three ways to sandbox a harness</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 940 310" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="t24" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <text class="box-label" x="160" y="26" text-anchor="middle" style="font-weight:600;">Whole agent sandboxed</text>
+      <rect x="20" y="40" width="280" height="210" rx="10" fill="none" stroke="#2d7a72" stroke-width="1.6" stroke-dasharray="5,4"/>
+      <text class="box-sub" x="34" y="60" style="font-size:12px; fill:#2d7a72;">sandbox</text>
+      <rect class="diag-rect" x="45" y="74" width="230" height="40" rx="6"/>
+      <text class="box-label" x="160" y="100" text-anchor="middle">Agent loop</text>
+      <rect class="diag-rect" x="45" y="124" width="230" height="40" rx="6"/>
+      <text class="box-label" x="160" y="150" text-anchor="middle">Tools and files</text>
+      <rect class="diag-rect" x="45" y="174" width="230" height="40" rx="6"/>
+      <text class="box-label" x="160" y="200" text-anchor="middle">Generated code</text>
+      <text class="box-sub" x="160" y="278" text-anchor="middle" style="font-size:13px; fill:#2d7a72;">Blast radius contained</text>
+
+      <text class="box-label" x="470" y="26" text-anchor="middle" style="font-weight:600;">Reasoning and execution split</text>
+      <rect class="diag-rect" x="345" y="80" width="120" height="120" rx="6"/>
+      <text class="box-label" x="405" y="136" text-anchor="middle">Agent loop</text>
+      <text class="box-sub" x="405" y="156" text-anchor="middle">no credentials</text>
+      <line class="diag-arrow" x1="465" y1="140" x2="516" y2="140" marker-end="url(#t24)"/>
+      <rect x="520" y="80" width="90" height="50" rx="6" fill="#ffffff" stroke="#2d7a72" stroke-width="1.6" stroke-dasharray="5,4"/>
+      <text class="box-label" x="565" y="110" text-anchor="middle">Sandbox</text>
+      <rect x="520" y="150" width="90" height="50" rx="6" fill="#ffffff" stroke="#2d7a72" stroke-width="1.6" stroke-dasharray="5,4"/>
+      <text class="box-label" x="565" y="180" text-anchor="middle">Sandbox</text>
+      <text class="box-sub" x="565" y="222" text-anchor="middle" style="font-size:12px;">one per step</text>
+      <text class="box-sub" x="470" y="278" text-anchor="middle" style="font-size:13px; fill:#2d7a72;">Separate failure domains</text>
+
+      <text class="box-label" x="780" y="26" text-anchor="middle" style="font-weight:600;">Only generated code sandboxed</text>
+      <rect class="diag-rect-attack" x="655" y="80" width="120" height="120" rx="6"/>
+      <text class="box-label" x="715" y="136" text-anchor="middle">Agent loop</text>
+      <text class="box-sub" x="715" y="156" text-anchor="middle">full credentials</text>
+      <line class="diag-arrow" x1="775" y1="140" x2="826" y2="140" marker-end="url(#t24)"/>
+      <rect x="830" y="110" width="70" height="60" rx="6" fill="#ffffff" stroke="#2d7a72" stroke-width="1.6" stroke-dasharray="5,4"/>
+      <text class="box-label" x="865" y="146" text-anchor="middle">Code</text>
+      <text class="box-sub" x="780" y="278" text-anchor="middle" style="font-size:13px; fill:#c43e2c;">Agent compromise reaches the host</text>
+    </svg>
+  </div>
+  <p class="footnote">Credentials should never live inside the sandbox. Inject them at the network boundary so a hijacked agent has nothing to exfiltrate. The third mode is the cheapest to adopt and the weakest.</p>
+  <aside class="notes">
+    Left: the whole harness runs inside one boundary. Nothing it does escapes, which is why this is the default for laptops and CI.
+    Middle: the agent loop runs on a platform and each execution step gets a disposable sandbox. The agent can survive an execution failure, and execution never sees agent state.
+    Right: the loop runs with full access and only generated code is isolated. Many frameworks stop here. If the loop is hijacked, the host is exposed.
+    On credentials, a proxy can substitute real values on outbound requests so the sandbox only ever holds placeholders. Claude Code's sandbox proxy supports masking like this, and OpenShell routes inference calls and injects keys at the boundary.
+  </aside>
+</section>
+
+<!-- SLIDE 25: Harness isolation comparison -->
+<section>
+  <div class="kicker">Harness isolation</div>
+  <h2>Permissions are policy. A sandbox is a boundary.</h2>
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Harness</th><th>Default posture</th><th>What enforces it</th><th>Check this</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Claude Code</td><td>Permission prompts. Optional OS sandbox for Bash and its child processes.</td><td>Seatbelt on macOS, bubblewrap on Linux. File limits plus a proxy with a domain allowlist.</td><td>Is the unsandboxed retry disabled? What can MCP servers and hooks reach?</td></tr>
+      <tr><td>Codex</td><td>Sandbox mode plus approval policy: read-only, workspace-write, or danger-full-access.</td><td>Seatbelt on macOS, Landlock and seccomp on Linux. <span class="mono">.git</span> stays read-only.</td><td>Which mode do scripts and CI use?</td></tr>
+      <tr><td>OpenCode</td><td>allow, ask, or deny rules per tool. Most default to allow.</td><td>Policy layer. The docs describe no sandbox, so add a container or VM.</td><td>Can bash read what a deny rule blocks?</td></tr>
+      <tr><td>OpenClaw</td><td>Docker sandbox for tools. Modes: off, non-main, all.</td><td>Container per session, agent, or shared. Separate tool policy and an elevated escape hatch.</td><td>Which sessions are sandboxed? Who can use elevated?</td></tr>
+      <tr><td>Hermes Agent</td><td>Approval for dangerous commands. Container backends.</td><td>Docker, Singularity, Modal. Approvals are skipped in containers because the container is the boundary.</td><td>Which backend runs in production? Are MCP credentials filtered?</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Defaults change fast. Read each project's current documentation, then test the boundary itself, not the config file.</p>
+  <aside class="notes">
+    The column that matters is "what enforces it". A prompt asks the model's operator. An OS sandbox or a container stops the process regardless of what the model wants.
+    Claude Code has an escape hatch that retries a failed command outside the sandbox. It goes back through the permission flow, and you can disable it. Codex's most permissive mode removes enforcement entirely, so watch for it in scripts.
+    OpenCode's rules are a policy profile. Hermes makes a deliberate trade: it skips approvals inside containers because the container is the boundary. That is only safe if the container really is one.
+    Verified against each project's documentation in September 2026.
+  </aside>
+</section>
+
+<!-- SLIDE 26: Application and kernel isolation -->
+<section>
+  <div class="kicker">Layering the boundary</div>
+  <h2>Application and kernel isolation stop different failures</h2>
+  <div class="two-col" style="align-items:center; margin-top:0.2em;">
+    <div style="flex:0 0 40%;">
+      <div class="diagram-wrap" style="margin-top:0;">
+        <svg viewBox="0 0 420 330" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="400" height="310" rx="12" fill="none" stroke="#5b6472" stroke-width="1.6"/>
+          <text class="box-label" x="26" y="36" style="font-size:14px;">Host kernel</text>
+          <rect x="40" y="55" width="340" height="250" rx="10" fill="none" stroke="#2d7a72" stroke-width="1.6" stroke-dasharray="5,4"/>
+          <text class="box-label" x="56" y="80" style="font-size:13px;">Guest kernel: Kata, Firecracker, gVisor</text>
+          <rect x="70" y="100" width="280" height="190" rx="8" fill="#2d7a72" fill-opacity="0.08" stroke="#2d7a72" stroke-width="1.6"/>
+          <text class="box-label" x="86" y="125" style="font-size:14px;">Application sandbox</text>
+          <text class="box-sub" x="86" y="148" style="font-size:12px;">egress allowlist</text>
+          <text class="box-sub" x="86" y="167" style="font-size:12px;">filesystem allowlist</text>
+          <text class="box-sub" x="86" y="186" style="font-size:12px;">dropped capabilities</text>
+          <rect class="diag-rect-attack" x="100" y="208" width="220" height="64" rx="6"/>
+          <text class="box-label" x="210" y="236" text-anchor="middle">Agent process</text>
+          <text class="box-sub" x="210" y="256" text-anchor="middle">your harness</text>
+        </svg>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <table class="data-table compact">
+        <thead>
+          <tr><th>Attack</th><th>Kernel only</th><th>App sandbox only</th><th>Both</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Prompt-injection exfiltration</td><td class="bad">Leaked</td><td class="good">Blocked</td><td class="good">Blocked</td></tr>
+          <tr><td>Kernel exploit, container escape</td><td class="good">Blocked</td><td class="bad">Host compromised</td><td class="good">Blocked</td></tr>
+        </tbody>
+      </table>
+      <ul class="tight" style="margin-top:0.8em;">
+        <li>The application layer decides where data can go.</li>
+        <li>The kernel layer decides what a compromised process can reach.</li>
+        <li>Red-team and evaluation runners execute hostile content too. Give them the same stack.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footnote">Source: published test of OpenCode with an open-weight model on Kubernetes, using OpenShell and Kata Containers (Red Hat Developer, July 23, 2026). One agent, one test. Treat it as a pattern, not a benchmark.</p>
+  <aside class="notes">
+    Two threat classes do not overlap. Prompt injection turns into exfiltration over an ordinary network call, which a microVM does not inspect. A kernel exploit bypasses user-space policy entirely, which an egress proxy does not stop.
+    In the published test each single layer lost to the attack in its blind spot, and only the combination stopped both.
+    Container isolation can be enough for an agent with a narrow service account, known endpoints, human approval for novel actions, and no writes to systems of record. Move to kernel isolation when the agent runs arbitrary code, holds broad credentials, or acts on sensitive data. Kernel isolation still needs correct network and resource limits.
+    Inspect's default compose config sets network_mode none, which is the right instinct for evaluation runs.
+  </aside>
+</section>
+
+<!-- SLIDE 27: Adversary in the middle -->
+<section>
+  <div class="kicker">Adversary in the middle</div>
+  <h2>Put a proxy between the harness and its tools</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="x27" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker><marker id="x27r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c43e2c"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="70" width="190" height="110" rx="6"/>
+      <text class="box-label" x="115" y="112" text-anchor="middle">Agent harness</text>
+      <text class="box-sub" x="115" y="134" text-anchor="middle">unmodified</text>
+      <text class="box-sub" x="115" y="152" text-anchor="middle">real model, real config</text>
+
+      <rect class="diag-rect-attack" x="330" y="40" width="240" height="170" rx="6" stroke-dasharray="5,4"/>
+      <text class="box-label" x="450" y="74" text-anchor="middle">Adversary in the middle</text>
+      <text class="box-sub" x="450" y="106" text-anchor="middle" style="font-size:12px;">forward the call</text>
+      <text class="box-sub" x="450" y="128" text-anchor="middle" style="font-size:12px;">splice in a payload</text>
+      <text class="box-sub" x="450" y="150" text-anchor="middle" style="font-size:12px;">change tool descriptions</text>
+      <text class="box-sub" x="450" y="172" text-anchor="middle" style="font-size:12px;">record without side effects</text>
+
+      <rect class="diag-rect" x="690" y="70" width="190" height="110" rx="6"/>
+      <text class="box-label" x="785" y="112" text-anchor="middle">Real tool</text>
+      <text class="box-sub" x="785" y="134" text-anchor="middle">MCP server or API</text>
+
+      <line class="diag-arrow" x1="210" y1="105" x2="326" y2="105" marker-end="url(#x27)"/>
+      <line class="diag-arrow-attack" x1="326" y1="150" x2="214" y2="150" marker-end="url(#x27r)"/>
+      <line class="diag-arrow" x1="570" y1="105" x2="686" y2="105" marker-end="url(#x27)"/>
+      <line class="diag-arrow" x1="686" y1="150" x2="574" y2="150" marker-end="url(#x27)"/>
+      <text class="box-sub" x="268" y="96" text-anchor="middle" style="font-size:12px;">call</text>
+      <text class="box-sub" x="268" y="170" text-anchor="middle" style="font-size:12px; fill:#c43e2c;">poisoned result</text>
+
+      <rect class="diag-rect-defend" x="330" y="270" width="240" height="64" rx="6"/>
+      <text class="box-label" x="450" y="299" text-anchor="middle">Grader</text>
+      <text class="box-sub" x="450" y="319" text-anchor="middle">utility, security, reachability</text>
+      <line class="diag-arrow" x1="450" y1="212" x2="450" y2="266" marker-end="url(#x27)"/>
+      <text class="box-sub" x="464" y="244" style="font-size:12px;">trace</text>
+      <path class="diag-arrow" d="M785,184 V302 H578" marker-end="url(#x27)"/>
+      <text class="box-sub" x="772" y="250" text-anchor="end" style="font-size:12px;">state after the run</text>
+    </svg>
+  </div>
+  <p class="footnote">The agent does not change and does not know. You test the real harness and model, not a copy. Open-source examples: MiDojo (MCP and other agent protocols) and AgentDojo (rebuilds the environment inside the framework).</p>
+  <aside class="notes">
+    Replace the real tool with a stand-in that sits in the path. For each call it can forward to the real tool, splice a payload into the result, change the tool list or descriptions, or capture the call without executing its side effects.
+    The grader scores two things independently: did the agent finish its legitimate task, and did it resist the attack. Then it checks reachability: if the payload never arrived, the run is not applicable.
+    The advantage over copy-based benchmarks is that you are testing the actual harness, model, prompts, and sandbox you ship.
+  </aside>
+</section>
+
+<!-- SLIDE 28: Two directions at the tool boundary -->
+<section>
+  <div class="kicker">Reading the harness-tool boundary</div>
+  <h2>Two directions, two different risk profiles</h2>
+  <table class="data-table compact">
+    <thead>
+      <tr><th></th><th>Compromised tool to agent</th><th>Hijacked agent to tool</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Question</td><td>What does the harness do with hostile tool content?</td><td>What does the tool do with a hijacked caller?</td></tr>
+      <tr><td>What the proxy does</td><td>Splices payloads into descriptions, results, and tool lists. Changes a definition after approval.</td><td>Sends the calls an injected agent would make. Captures side effects instead of running them.</td></tr>
+      <tr><td>Failure looks like</td><td>The agent follows instructions found in tool output, or keeps using a changed tool without re-approval.</td><td>The server accepts the call because the caller is "the agent": wrong audience, broad scope, no per-user check.</td></tr>
+      <tr><td>The fix lives in</td><td>Harness permissions, sandbox, gateway guardrails.</td><td>The tool server: scoped tokens, per-call authorization, argument validation.</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Attack classes on the left: tool poisoning, rug pull, tool shadowing. On the right: confused deputy, token passthrough, over-broad scopes, as covered in the MCP security best practices.</p>
+  <aside class="notes">
+    Most MCP testing only looks left: hostile content flowing into the agent. The right side matters just as much, because an injected agent is a compromised caller.
+    If a tool server trusts the agent for authorization, then prompt injection is an authorization bypass. The fix belongs in the server, not in a better system prompt.
+    Tool poisoning hides instructions in descriptions. A rug pull changes a definition after the user approved it. Shadowing lets one server's description steer how the agent calls a different server.
+  </aside>
+</section>
+
+<!-- SLIDE 29: One variable at a time -->
+<section>
+  <div class="kicker">Reading the results</div>
+  <h2>Change one variable at a time</h2>
+  <div class="two-col" style="align-items:flex-start; margin-top:0.4em;">
+    <div style="flex:1.25;">
+      <ul class="tight">
+        <li>Run the same attack suite against every configuration: bare harness, approvals on, OS sandbox on, gateway guardrail on, tool tokens narrowed.</li>
+        <li>Change one variable per run. The difference is the value of that control.</li>
+        <li>Record model, harness, tool server, and prompt versions with every result.</li>
+        <li>Report utility next to security. Mark payloads that never arrived as not applicable.</li>
+      </ul>
+    </div>
+    <div style="flex:1;">
+      <p style="font-size:0.6em; color:var(--text-dim); margin:0 0 0.4em 0;">Vary what the attacker controls</p>
+      <table class="data-table compact" style="margin-top:0;">
+        <thead>
+          <tr><th>Attacker knowledge</th><th>Payload enters through</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Black box</td><td>The user prompt</td></tr>
+          <tr><td>Gray box</td><td>A data source the agent reads</td></tr>
+          <tr><td>White box</td><td>A tool response the attacker controls</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="footnote">The output is a risk profile: for this model, harness, sandbox, and tool set, these vectors succeeded at this rate, and this control moved it.</p>
+  <aside class="notes">
+    This is an ablation design. If you add three controls at once and attack success drops, you do not know which one mattered, or whether one of them just broke the task.
+    Vary one thing per run and keep the attack suite fixed. The delta is the measured value of that control in your environment.
+    Pin versions, because a harness update or a model swap changes the profile as much as a control does.
+  </aside>
+</section>
+
+<!-- SLIDE 30: Traces to tests -->
+<section>
+  <div class="kicker">From production back to the suite</div>
+  <h2>Raw traces are not test cases</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="f30" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="20" width="150" height="64" rx="6"/>
+      <text class="box-label" x="95" y="49" text-anchor="middle">Production traces</text>
+      <text class="box-sub" x="95" y="70" text-anchor="middle">OTel or MLflow</text>
+
+      <rect class="diag-rect-attack" x="207" y="20" width="150" height="64" rx="6"/>
+      <text class="box-label" x="282" y="49" text-anchor="middle">Select failures</text>
+      <text class="box-sub" x="282" y="70" text-anchor="middle">failed sessions</text>
+
+      <rect class="diag-rect" x="394" y="20" width="150" height="64" rx="6"/>
+      <text class="box-label" x="469" y="49" text-anchor="middle">Transform</text>
+      <text class="box-sub" x="469" y="70" text-anchor="middle">normalize, redact</text>
+
+      <rect class="diag-rect-defend" x="581" y="20" width="150" height="64" rx="6"/>
+      <text class="box-label" x="656" y="58" text-anchor="middle">Five gates</text>
+
+      <rect class="diag-rect" x="768" y="20" width="130" height="64" rx="6"/>
+      <text class="box-label" x="833" y="49" text-anchor="middle">Dataset</text>
+      <text class="box-sub" x="833" y="70" text-anchor="middle">versioned</text>
+
+      <line class="diag-arrow" x1="170" y1="52" x2="203" y2="52" marker-end="url(#f30)"/>
+      <line class="diag-arrow" x1="357" y1="52" x2="390" y2="52" marker-end="url(#f30)"/>
+      <line class="diag-arrow" x1="544" y1="52" x2="577" y2="52" marker-end="url(#f30)"/>
+      <line class="diag-arrow" x1="731" y1="52" x2="764" y2="52" marker-end="url(#f30)"/>
+      <line class="diag-arrow" x1="656" y1="88" x2="656" y2="118" marker-end="url(#f30)"/>
+      <text class="box-sub" x="656" y="140" text-anchor="middle" style="font-size:13px;">gates before a trace becomes evidence</text>
+
+      <rect class="diag-rect" x="10" y="160" width="160" height="64" rx="6"/>
+      <text class="box-label" x="90" y="198" text-anchor="middle">Input present</text>
+      <rect class="diag-rect" x="190" y="160" width="160" height="64" rx="6"/>
+      <text class="box-label" x="270" y="198" text-anchor="middle">Context declared</text>
+      <rect class="diag-rect" x="370" y="160" width="160" height="64" rx="6"/>
+      <text class="box-label" x="450" y="198" text-anchor="middle">Outcome defined</text>
+      <rect class="diag-rect" x="550" y="160" width="160" height="64" rx="6"/>
+      <text class="box-label" x="630" y="198" text-anchor="middle">Schema passes</text>
+      <rect class="diag-rect-defend" x="730" y="160" width="160" height="64" rx="6"/>
+      <text class="box-label" x="810" y="188" text-anchor="middle">Human reviewer</text>
+      <text class="box-label" x="810" y="208" text-anchor="middle">approves</text>
+    </svg>
+  </div>
+  <p class="footnote">Hash or drop content you cannot retain. Record provenance on every case: source trace, transformation, reviewer.</p>
+  <aside class="notes">
+    The sessions that went wrong are the best source of new tests, but a raw trace is missing things a test needs: a declared context, a defined correct outcome, a clean schema.
+    The five gates make a trace-derived case trustworthy evidence instead of noise. The last gate is a person.
+    Privacy review sits in the transform step. If you cannot keep the content, keep a hash and the structure, and note it in provenance.
+  </aside>
+</section>
+
+<!-- SLIDE 31: Continuous evaluation cadence -->
+<section>
+  <div class="kicker">Continuous evaluation</div>
+  <h2>One run is a snapshot. The risk profile is a series.</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="c31" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect" x="20" y="15" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="38" text-anchor="middle" style="font-size:13px;">Model or adapter updated</text>
+      <rect class="diag-rect" x="20" y="61" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="84" text-anchor="middle" style="font-size:13px;">Harness or sandbox version bumped</text>
+      <rect class="diag-rect" x="20" y="107" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="130" text-anchor="middle" style="font-size:13px;">Tool or MCP server changed</text>
+      <rect class="diag-rect" x="20" y="153" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="176" text-anchor="middle" style="font-size:13px;">Prompt, policy, or guardrail changed</text>
+      <rect class="diag-rect-attack" x="20" y="199" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="222" text-anchor="middle" style="font-size:13px;">New attack technique published</text>
+      <rect class="diag-rect-attack" x="20" y="245" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="268" text-anchor="middle" style="font-size:13px;">Production incident or failing session</text>
+      <rect class="diag-rect-defend" x="20" y="291" width="300" height="34" rx="6"/>
+      <text class="box-label" x="170" y="314" text-anchor="middle" style="font-size:13px;">Schedule: nightly or weekly baseline</text>
+
+      <line class="diag-arrow" x1="320" y1="32" x2="350" y2="32"/>
+      <line class="diag-arrow" x1="320" y1="78" x2="350" y2="78"/>
+      <line class="diag-arrow" x1="320" y1="124" x2="350" y2="124"/>
+      <line class="diag-arrow" x1="320" y1="170" x2="350" y2="170"/>
+      <line class="diag-arrow" x1="320" y1="216" x2="350" y2="216"/>
+      <line class="diag-arrow" x1="320" y1="262" x2="350" y2="262"/>
+      <line class="diag-arrow" x1="320" y1="308" x2="350" y2="308"/>
+      <line class="diag-arrow" x1="350" y1="32" x2="350" y2="308"/>
+      <line class="diag-arrow" x1="350" y1="170" x2="386" y2="170" marker-end="url(#c31)"/>
+
+      <rect class="diag-rect-defend" x="390" y="105" width="200" height="130" rx="8"/>
+      <text class="box-label" x="490" y="158" text-anchor="middle">Same suite</text>
+      <text class="box-sub" x="490" y="182" text-anchor="middle">pinned versions</text>
+      <text class="box-sub" x="490" y="200" text-anchor="middle">versioned test set</text>
+
+      <line class="diag-arrow" x1="590" y1="170" x2="666" y2="70" marker-end="url(#c31)"/>
+      <line class="diag-arrow" x1="590" y1="170" x2="666" y2="170" marker-end="url(#c31)"/>
+      <line class="diag-arrow" x1="590" y1="170" x2="666" y2="270" marker-end="url(#c31)"/>
+
+      <rect class="diag-rect" x="670" y="35" width="210" height="70" rx="6"/>
+      <text class="box-label" x="775" y="64" text-anchor="middle">Versioned results</text>
+      <text class="box-sub" x="775" y="86" text-anchor="middle">what, when, which config</text>
+      <rect class="diag-rect" x="670" y="135" width="210" height="70" rx="6"/>
+      <text class="box-label" x="775" y="164" text-anchor="middle">Trend by surface</text>
+      <text class="box-sub" x="775" y="186" text-anchor="middle">input, tool, memory, harness</text>
+      <rect class="diag-rect-attack" x="670" y="235" width="210" height="70" rx="6"/>
+      <text class="box-label" x="775" y="264" text-anchor="middle">Release gate</text>
+      <text class="box-sub" x="775" y="286" text-anchor="middle">fail on rising success</text>
+    </svg>
+  </div>
+  <p class="footnote">Run cheap suites on every change. Run expensive adaptive campaigns on a schedule. Keep the suite itself versioned, or a trend line means nothing.</p>
+  <aside class="notes">
+    A red-team result expires. The model, the harness, the tool servers, the prompts, and the attack literature all move.
+    Wire the same pinned suite to change triggers and to a schedule. Store every result with its configuration so you can plot attack success per surface over time and gate a release on it.
+    Keep the suite versioned. If the suite changes between runs, a rising or falling line tells you nothing.
+  </aside>
+</section>
+
+<!-- SLIDE 32: Loop, not a pipeline -->
 <section>
   <div class="kicker">Mitigation is not a terminal state</div>
   <h2>A loop, not a pipeline that ends</h2>
@@ -535,18 +1282,21 @@
   </div>
 </section>
 
-<!-- SLIDE 11: Close -->
+<!-- SLIDE 33: Takeaways -->
 <section>
   <div class="kicker">Takeaways</div>
-  <h2>Three things to take with you</h2>
-  <ul class="takeaway-list">
+  <h2>Four things to take with you</h2>
+  <ul class="takeaway-list compact">
     <li>Agentic attacks live in the trajectory, not the prompt. Test the whole path, not one turn.</li>
-    <li>Every red-team finding becomes a permanent regression test, tied to a retained trace. That's the difference between patched and provably patched.</li>
-    <li>Mitigation has no finish line. Build the re-test loop into the architecture from day one, not as an afterthought.</li>
+    <li>Every finding becomes a permanent regression test tied to a retained trace. That's the difference between patched and provably patched.</li>
+    <li>The harness and its tool boundary are part of the system under test. A permission prompt is policy. A sandbox is the boundary. Test both.</li>
+    <li>Mitigation has no finish line. Re-run on every change and on a schedule, so the risk profile is a series, not a snapshot.</li>
   </ul>
   <p class="footnote">This field is younger than it looks. Most of what "good" looks like is still being figured out in public.</p>
+  <aside class="notes">
+    Close on the loop. Ask the room which of the four they can start on Monday. The cheapest first step is usually the regression suite plus a scheduled run.
+  </aside>
 </section>
-
 </div>
 </div>
 
@@ -569,6 +1319,21 @@
     maxScale: 3,
     plugins: [ RevealNotes ]
   });
+</script>
+
+<script>
+  (function () {
+    var btn = document.getElementById('fs-btn');
+    var root = document.documentElement;
+    var request = root.requestFullscreen || root.webkitRequestFullscreen;
+    if (!btn) return;
+    if (!request) { btn.hidden = true; return; }
+    function isFull() { return document.fullscreenElement || document.webkitFullscreenElement; }
+    function sync() { btn.hidden = !!isFull(); }
+    btn.addEventListener('click', function () { request.call(root); });
+    document.addEventListener('fullscreenchange', sync);
+    document.addEventListener('webkitfullscreenchange', sync);
+  })();
 </script>
 </body>
 </html>
