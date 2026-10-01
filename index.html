@@ -143,6 +143,11 @@
   .fs-btn:hover, .fs-btn:focus-visible { opacity: 1; color: var(--text); border-color: var(--text-dim); }
   .fs-btn[hidden] { display: none; }
   @media print { .fs-btn { display: none; } }
+
+  .qr-panel { background: #ffffff; border: 1px solid var(--line); border-radius: 10px; padding: 18px; line-height: 0; }
+  .qr-panel svg { width: 340px; height: 340px; display: block; }
+  .reveal p.qr-url { font-family: 'IBM Plex Mono', monospace; font-size: 0.62em; color: var(--text); margin: 0 0 1em 0; }
+  .reveal p.qr-name { font-size: 1.1em; font-weight: 600; margin: 0 0 0.2em 0; }
 </style>
 </head>
 <body>
@@ -1310,6 +1315,51 @@
   <p class="footnote">This field is younger than it looks. Most of what "good" looks like is still being figured out in public.</p>
   <aside class="notes">
     Close on the loop. Ask the room which of the four they can start on Monday. The cheapest first step is usually the regression suite plus a scheduled run.
+  </aside>
+</section>
+
+<!-- SLIDE 34: Open the deck online -->
+<section>
+  <div class="kicker">Follow along</div>
+  <h2>Open this deck on your own device</h2>
+  <div class="two-col" style="align-items:center; margin-top:0.6em;">
+    <div style="flex:0 0 auto;">
+      <div class="qr-panel"><svg role="img" aria-label="QR code linking to the online presentation" shape-rendering="crispEdges" viewBox="0 0 33 33" class="segno"><path class="qrline" stroke="#141a24" d="M0 0.5h7m3 0h1m2 0h1m2 0h1m1 0h4m1 0h1m2 0h7m-33 1h1m5 0h1m2 0h2m2 0h4m4 0h1m4 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m3 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m2 0h4m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h2m3 0h5m2 0h2m4 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h1m1 0h1m1 0h2m3 0h4m-23 1h1m1 0h5m2 0h1m3 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h5m-31 1h6m1 0h3m1 0h2m3 0h4m3 0h1m2 0h2m1 0h4m-33 1h2m1 0h1m1 0h3m1 0h4m2 0h1m1 0h1m3 0h2m1 0h1m3 0h1m1 0h1m-31 1h2m1 0h3m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m3 0h1m1 0h3m1 0h1m-32 1h1m2 0h1m1 0h3m1 0h1m1 0h1m4 0h1m1 0h1m2 0h4m2 0h2m1 0h1m-32 1h4m4 0h3m1 0h1m1 0h4m1 0h2m2 0h1m2 0h1m3 0h3m-32 1h10m1 0h1m5 0h1m1 0h3m1 0h3m2 0h3m-32 1h3m1 0h2m3 0h1m1 0h1m2 0h1m1 0h1m4 0h2m2 0h2m1 0h1m1 0h1m-26 1h2m1 0h2m2 0h1m4 0h1m4 0h1m1 0h2m1 0h3m2 0h1m-33 1h1m1 0h1m1 0h1m2 0h5m2 0h1m4 0h2m2 0h1m1 0h3m1 0h4m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h2m2 0h1m4 0h2m2 0h2m1 0h2m1 0h1m-31 1h3m1 0h2m2 0h2m1 0h1m2 0h1m3 0h1m2 0h2m2 0h1m1 0h4m1 0h1m-30 1h1m2 0h2m1 0h3m1 0h1m1 0h1m1 0h1m4 0h2m1 0h1m1 0h3m-30 1h6m1 0h2m1 0h1m1 0h1m2 0h1m3 0h3m1 0h1m2 0h2m2 0h1m1 0h1m-33 1h1m1 0h5m1 0h1m1 0h2m1 0h3m4 0h1m4 0h1m4 0h2m-32 1h1m3 0h1m2 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h3m2 0h3m2 0h2m-32 1h1m3 0h1m1 0h1m1 0h1m1 0h2m3 0h1m1 0h1m1 0h1m2 0h8m2 0h1m-25 1h2m1 0h1m1 0h2m1 0h1m1 0h3m3 0h1m3 0h1m1 0h3m-33 1h7m5 0h1m1 0h5m3 0h3m1 0h1m1 0h1m1 0h1m-31 1h1m5 0h1m1 0h4m3 0h2m2 0h1m1 0h1m1 0h2m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1m1 0h2m3 0h1m1 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h2m1 0h3m1 0h1m1 0h3m2 0h1m1 0h3m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h3m1 0h1m1 0h2m4 0h2m2 0h1m-31 1h1m5 0h1m5 0h1m1 0h1m1 0h1m1 0h5m2 0h1m2 0h1m1 0h1m-31 1h7m1 0h3m5 0h2m4 0h1m1 0h1m2 0h1m1 0h1m1 0h1"/></svg></div>
+    </div>
+    <div style="flex:1;">
+      <p class="qr-url">williamcaban.github.io/261001-red-teaming-agents</p>
+      <ul class="tight">
+        <li>Works on phones and laptops. Swipe or use the arrow keys.</li>
+        <li>Press <span class="mono">F</span> for full screen and <span class="mono">S</span> for speaker notes.</li>
+        <li>Source: <span class="mono" style="font-size:0.8em;">github.com/williamcaban/261001-red-teaming-agents</span></li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    Leave this up while people scan. The deck is a single static page, so it loads fast on conference wifi. The speaker notes carry the reasoning behind each slide.
+  </aside>
+</section>
+
+<!-- SLIDE 35: Connect on LinkedIn -->
+<section>
+  <div class="kicker">Stay in touch</div>
+  <h2>Connect with me on LinkedIn</h2>
+  <div class="two-col" style="align-items:center; margin-top:0.6em;">
+    <div style="flex:0 0 auto;">
+      <div class="qr-panel"><svg role="img" aria-label="QR code linking to William Caban on LinkedIn" shape-rendering="crispEdges" viewBox="0 0 29 29" class="segno"><path class="qrline" stroke="#141a24" d="M0 0.5h7m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m3 0h7m-29 1h1m5 0h1m2 0h1m1 0h4m2 0h2m1 0h1m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m3 0h4m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m3 0h2m3 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m7 0h3m1 0h1m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h2m7 0h3m-21 1h1m1 0h1m3 0h2m1 0h2m1 0h5m3 0h1m2 0h1m2 0h1m1 0h1m-27 1h3m5 0h1m1 0h2m1 0h2m1 0h2m2 0h2m3 0h2m-28 1h1m2 0h1m1 0h2m1 0h1m1 0h2m2 0h2m2 0h1m2 0h1m2 0h2m1 0h1m-29 1h2m1 0h2m6 0h3m1 0h1m2 0h1m1 0h2m2 0h2m-24 1h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h2m4 0h1m-28 1h3m1 0h1m5 0h1m3 0h3m1 0h2m1 0h2m3 0h2m-29 1h2m2 0h3m3 0h2m1 0h3m1 0h3m2 0h2m4 0h1m-28 1h2m4 0h1m1 0h1m1 0h2m1 0h1m3 0h3m2 0h2m-23 1h1m3 0h2m1 0h1m2 0h5m3 0h1m1 0h2m4 0h1m-26 1h1m1 0h1m3 0h1m1 0h7m1 0h2m1 0h2m2 0h3m-29 1h4m1 0h4m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m2 0h2m2 0h1m-27 1h3m3 0h1m4 0h1m1 0h1m3 0h1m1 0h1m2 0h1m-25 1h3m2 0h3m1 0h3m1 0h1m1 0h2m2 0h7m1 0h1m-20 1h2m5 0h3m2 0h1m3 0h3m1 0h1m-29 1h7m1 0h2m2 0h4m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1m-29 1h1m5 0h1m3 0h1m3 0h1m1 0h1m2 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m3 0h5m1 0h1m2 0h7m2 0h1m-29 1h1m1 0h3m1 0h1m2 0h2m2 0h5m2 0h2m2 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m1 0h2m1 0h1m1 0h2m2 0h1m2 0h1m2 0h2m-29 1h1m5 0h1m3 0h4m4 0h1m1 0h3m2 0h1m-26 1h7m1 0h2m1 0h1m3 0h2m2 0h3m3 0h1m2 0h1"/></svg></div>
+    </div>
+    <div style="flex:1;">
+      <p class="qr-name">William Caban</p>
+      <p class="qr-url">linkedin.com/in/williamcaban</p>
+      <ul class="tight">
+        <li>Scan to open my profile and send a connection request.</li>
+        <li>Mention Mass Open in the note so I know where we met.</li>
+        <li>Counterexamples and field stories are the most useful messages.</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    Close here. Invite people to connect and to send what they have seen work or fail in their own agent deployments.
   </aside>
 </section>
 </div>

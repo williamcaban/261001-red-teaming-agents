@@ -156,6 +156,13 @@ dense tables), `ul.tight`, `.callout` (add `.defend` for the green variant),
 `.two-col`, and `.takeaway-list.compact`. Give every new slide an
 `<aside class="notes">` block.
 
+The last two slides are QR codes (the online deck and the owner's LinkedIn
+profile). They are inline SVG, so they render offline and need no library at
+runtime. They were generated with the Python `segno` package at error level M.
+If either URL changes, regenerate the SVG and re-scan the rendered slide with a
+decoder (OpenCV's `QRCodeDetector` works) before pushing. Style the URL and
+name lines with `.reveal p.qr-url` and `.reveal p.qr-name`, not bare classes.
+
 Full screen is built in. Reveal handles the `F` key, and a small
 `#fs-btn` button calls the Fullscreen API and hides itself while in full
 screen. Keep both.
