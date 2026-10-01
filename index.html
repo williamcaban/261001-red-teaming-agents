@@ -25,9 +25,9 @@
     --neutral-accent: #93700f;
   }
 
-  .reveal { background: var(--ink); font-family: 'IBM Plex Sans', sans-serif; color: var(--text); }
+  .reveal { background: var(--ink); font-family: 'IBM Plex Sans', sans-serif; color: var(--text); font-size: 26px; }
   .reveal .slides { text-align: left; }
-  .reveal .slides section { padding: 40px 60px; }
+  .reveal .slides section { padding: 40px 60px; box-sizing: border-box; }
 
   .reveal h1, .reveal h2, .reveal h3 {
     font-family: 'IBM Plex Sans', sans-serif;
@@ -409,7 +409,7 @@
       <text class="box-sub" x="280" y="286" text-anchor="middle" font-size="11">Agentic — monitors sub-agents, breaks loops and goal drift</text>
 
       <rect x="20" y="0" width="900" height="298" rx="10" fill="none" stroke="#93700f" stroke-width="1.6" stroke-dasharray="2,4"/>
-      <text class="box-sub" x="800" y="20" font-size="11" fill="#93700f">Infrastructure — sandbox boundary</text>
+      <text class="box-sub" x="905" y="20" text-anchor="end" font-size="11" fill="#93700f">Infrastructure — sandbox boundary</text>
     </svg>
   </div>
   <p class="footnote">Tool checkpoint catches tool misuse · Infrastructure sandbox catches privilege escalation · Retrieval and Input catch context poisoning.</p>
@@ -495,7 +495,7 @@
   <div class="kicker">Mitigation is not a terminal state</div>
   <h2>A loop, not a pipeline that ends</h2>
   <div class="diagram-wrap">
-    <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 700 420" style="max-width: 640px;" xmlns="http://www.w3.org/2000/svg">
       <defs><marker id="a6" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
 
       <rect class="diag-rect-attack" x="275" y="20" width="150" height="55" rx="6"/>
