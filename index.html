@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Teaming Agents: The New Attack Surface of Tools and State</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css" id="theme" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #f7f8fa;
+    --panel: #ffffff;
+    --panel-raised: #ffffff;
+    --line: #d6dbe2;
+    --text: #141a24;
+    --text-dim: #5b6472;
+    --attack: #c43e2c;
+    --attack-dim: #c43e2c88;
+    --defend: #2d7a72;
+    --defend-dim: #2d7a7288;
+    --neutral-accent: #93700f;
+  }
+
+  .reveal { background: var(--ink); font-family: 'IBM Plex Sans', sans-serif; color: var(--text); }
+  .reveal .slides { text-align: left; }
+  .reveal .slides section { padding: 40px 60px; }
+
+  .reveal h1, .reveal h2, .reveal h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text);
+  }
+
+  .reveal h1 { font-size: 2.1em; line-height: 1.15; }
+  .reveal h2 { font-size: 1.5em; margin-bottom: 0.5em; }
+  .reveal h3 { font-size: 1.05em; color: var(--text-dim); font-weight: 500; }
+
+  .reveal p, .reveal li { font-size: 0.78em; line-height: 1.5; color: var(--text); }
+  .reveal ul, .reveal ol { display: block; margin-left: 0.3em; }
+  .reveal li { margin-bottom: 0.5em; }
+  .reveal li::marker { color: var(--neutral-accent); }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5em;
+    color: var(--text-dim);
+    margin-bottom: 0.6em;
+  }
+
+  .title-slide h1 { font-size: 1.9em; max-width: 11em; }
+  .title-slide .subtitle { font-size: 0.85em; color: var(--text-dim); margin-top: 0.4em; }
+  .title-slide .meta { font-size: 0.6em; color: var(--text-dim); margin-top: 2.5em; font-family: 'IBM Plex Mono', monospace; }
+  .title-slide .accent-bar { width: 70px; height: 4px; background: var(--attack); margin-bottom: 1.2em; }
+
+  .two-col { display: flex; gap: 2.2em; align-items: flex-start; }
+  .two-col > div { flex: 1; }
+
+  .diagram-wrap { margin-top: 1em; text-align: center; }
+  .diagram-wrap svg { max-width: 100%; height: auto; }
+
+  .box-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; fill: var(--text); }
+  .box-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: var(--text-dim); }
+  .diag-rect { fill: var(--panel-raised); stroke: var(--line); stroke-width: 1.5; rx: 6; }
+  .diag-rect-attack { fill: var(--panel-raised); stroke: var(--attack); stroke-width: 1.5; rx: 6; }
+  .diag-rect-defend { fill: var(--panel-raised); stroke: var(--defend); stroke-width: 1.5; rx: 6; }
+  .diag-arrow { stroke: var(--text-dim); stroke-width: 1.6; fill: none; }
+  .diag-arrow-attack { stroke: var(--attack); stroke-width: 1.6; fill: none; }
+  .diag-arrow-defend { stroke: var(--defend); stroke-width: 1.6; fill: none; }
+
+  .cards { display: flex; gap: 1.2em; margin-top: 1em; }
+  .card {
+    flex: 1; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; padding: 1.1em 1.2em;
+  }
+  .card.attack { border-color: var(--attack-dim); }
+  .card h4 { font-size: 0.85em; margin: 0.4em 0 0.3em 0; color: var(--text); font-weight: 600; }
+  .card p { font-size: 0.68em; color: var(--text-dim); margin: 0; }
+
+  .takeaway-list { list-style: none; margin-left: 0; }
+  .takeaway-list li {
+    font-size: 0.95em; padding: 0.6em 0 0.6em 1.4em; border-left: 3px solid var(--neutral-accent);
+    margin-bottom: 0.8em;
+  }
+
+  .footnote { font-size: 0.45em; color: var(--text-dim); margin-top: 1.8em; font-family: 'IBM Plex Mono', monospace; }
+
+  .section-divider { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+  .section-divider .num { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; color: var(--neutral-accent); }
+
+  .pill {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.5em;
+    padding: 0.25em 0.6em; border-radius: 3px; border: 1px solid var(--line); color: var(--text-dim);
+    margin-right: 0.4em;
+  }
+
+  .reveal .progress { color: var(--attack); }
+  .reveal .controls { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- SLIDE 1: Title -->
+<section class="title-slide">
+  <div class="accent-bar"></div>
+  <div class="kicker">Mass Open — Agentic AI, Boston</div>
+  <h1>Red Teaming Agents: The New Attack Surface of Tools and State</h1>
+  <p class="subtitle">A practical threat model and mitigation pipeline for agentic AI systems</p>
+  <p class="meta">William Caban</p>
+  <aside class="notes">
+    Open with the incident, not the title. Let the title card sit for a beat, then move straight into the hook.
+  </aside>
+</section>
+
+<!-- SLIDE 2: Hook -->
+<section>
+  <div class="kicker">Opening</div>
+  <h2>One step at a time, nothing looks wrong</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/>
+        </marker>
+        <marker id="arrow-attack" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#c43e2c"/>
+        </marker>
+      </defs>
+      <rect class="diag-rect" x="20" y="60" width="160" height="60" rx="6"/>
+      <text class="box-label" x="100" y="95" text-anchor="middle">Prompt in</text>
+      <line class="diag-arrow" x1="180" y1="90" x2="235" y2="90" marker-end="url(#arrow)"/>
+
+      <rect class="diag-rect" x="240" y="60" width="160" height="60" rx="6"/>
+      <text class="box-label" x="320" y="95" text-anchor="middle">Tool call</text>
+      <line class="diag-arrow" x1="400" y1="90" x2="455" y2="90" marker-end="url(#arrow)"/>
+
+      <rect class="diag-rect" x="460" y="60" width="160" height="60" rx="6"/>
+      <text class="box-label" x="540" y="95" text-anchor="middle">Tool call</text>
+      <line class="diag-arrow-attack" x1="620" y1="90" x2="675" y2="90" marker-end="url(#arrow-attack)"/>
+
+      <rect class="diag-rect-attack" x="680" y="60" width="120" height="60" rx="6"/>
+      <text class="box-label" x="740" y="95" text-anchor="middle">Outcome</text>
+
+      <text class="box-sub" x="100" y="145" text-anchor="middle">looks fine</text>
+      <text class="box-sub" x="320" y="145" text-anchor="middle">looks fine</text>
+      <text class="box-sub" x="540" y="145" text-anchor="middle">looks fine</text>
+      <text class="box-sub" x="740" y="145" text-anchor="middle" fill="#c43e2c">this is the attack</text>
+    </svg>
+  </div>
+  <p style="margin-top:0.8em; color:var(--text-dim); font-size:0.65em;">Your chatbot red-teaming checklist does not cover this.</p>
+</section>
+
+<!-- SLIDE 3: Why different -->
+<section>
+  <div class="kicker">Why this is a different problem</div>
+  <h2>One prompt, one output vs. a loop with branches</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker>
+      </defs>
+
+      <text class="box-label" x="180" y="30" text-anchor="middle" font-weight="600">Single-turn LLM</text>
+      <rect class="diag-rect" x="90" y="60" width="140" height="55" rx="6"/>
+      <text class="box-label" x="160" y="92" text-anchor="middle">Prompt</text>
+      <line class="diag-arrow" x1="230" y1="87" x2="275" y2="87" marker-end="url(#a2)"/>
+      <rect class="diag-rect" x="280" y="60" width="140" height="55" rx="6"/>
+      <text class="box-label" x="350" y="92" text-anchor="middle">Output</text>
+      <text x="470" y="92" font-size="22" fill="#2d7a72">&#10003;</text>
+      <text class="box-sub" x="255" y="150" text-anchor="middle">linear, closed, one check</text>
+
+      <text class="box-label" x="680" y="30" text-anchor="middle" font-weight="600">Agentic system</text>
+      <g>
+        <circle cx="680" cy="140" r="80" fill="none" stroke="#5b6472" stroke-width="1.6" stroke-dasharray="5,4"/>
+        <rect class="diag-rect" x="620" y="60" width="120" height="45" rx="6"/>
+        <text class="box-label" x="680" y="88" text-anchor="middle" font-size="13">Plan</text>
+        <rect class="diag-rect" x="760" y="118" width="120" height="45" rx="6"/>
+        <text class="box-label" x="820" y="146" text-anchor="middle" font-size="13">Tool call</text>
+        <rect class="diag-rect" x="620" y="175" width="120" height="45" rx="6"/>
+        <text class="box-label" x="680" y="203" text-anchor="middle" font-size="13">State update</text>
+        <line class="diag-arrow" x1="740" y1="82" x2="770" y2="118" marker-end="url(#a2)"/>
+        <line class="diag-arrow" x1="800" y1="163" x2="700" y2="178" marker-end="url(#a2)"/>
+        <line class="diag-arrow" x1="650" y1="175" x2="660" y2="107" marker-end="url(#a2)"/>
+      </g>
+      <text class="box-sub" x="500" y="235">tool access</text>
+      <text class="box-sub" x="500" y="255">persistent state</text>
+      <text class="box-sub" x="500" y="275">other agents</text>
+      <line class="diag-arrow-attack" x1="560" y1="232" x2="610" y2="150" marker-end="url(#a2)" stroke-dasharray="3,3"/>
+      <line class="diag-arrow-attack" x1="560" y1="252" x2="605" y2="210" marker-end="url(#a2)" stroke-dasharray="3,3"/>
+      <line class="diag-arrow-attack" x1="560" y1="272" x2="640" y2="260" marker-end="url(#a2)" stroke-dasharray="3,3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- SLIDE 4: Threat model -->
+<section>
+  <div class="kicker">Threat model walkthrough</div>
+  <h2>Three new attack surfaces</h2>
+  <div class="cards">
+    <div class="card attack">
+      <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="none" stroke="#c43e2c" stroke-width="2"/><path d="M14 7v7l5 3" stroke="#c43e2c" stroke-width="2" fill="none"/></svg>
+      <h4>Tool misuse</h4>
+      <p>A benign-looking call to a real tool, chained toward an unintended effect.</p>
+    </div>
+    <div class="card attack">
+      <svg width="28" height="28" viewBox="0 0 28 28"><path d="M6 24 L12 18 L18 12 L24 4" stroke="#c43e2c" stroke-width="2" fill="none"/><circle cx="24" cy="4" r="3" fill="#c43e2c"/></svg>
+      <h4>Privilege escalation</h4>
+      <p>Delegated actions accumulate access the agent was never meant to hold alone.</p>
+    </div>
+    <div class="card attack">
+      <svg width="28" height="28" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="16" rx="2" fill="none" stroke="#c43e2c" stroke-width="2"/><line x1="4" y1="14" x2="24" y2="14" stroke="#c43e2c" stroke-width="2"/><path d="M14 6 L17 14 L13 22" stroke="#c43e2c" stroke-width="1.5" fill="none"/></svg>
+      <h4>Memory / context poisoning</h4>
+      <p>State carried across turns gets corrupted mid-task, not caught at the input gate.</p>
+    </div>
+  </div>
+  <p class="footnote">Each step can look fine in isolation. Only the trajectory is the attack.</p>
+</section>
+
+<!-- SLIDE 4b: Alignment vs Guardrails -->
+<section>
+  <div class="kicker">Why alignment alone doesn't close this</div>
+  <h2>Alignment and guardrails solve different problems</h2>
+  <table style="width:100%; border-collapse:collapse; margin-top:0.8em; font-size:0.62em;">
+    <thead>
+      <tr style="border-bottom:2px solid var(--line);">
+        <th style="text-align:left; padding:0.5em 0.8em; color:var(--text-dim); font-weight:500;"></th>
+        <th style="text-align:left; padding:0.5em 0.8em; color:var(--text); font-weight:600;">Model alignment</th>
+        <th style="text-align:left; padding:0.5em 0.8em; color:var(--attack); font-weight:600;">Guardrails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:0.6em 0.8em; color:var(--text-dim);">When it applies</td>
+        <td style="padding:0.6em 0.8em;">Unanticipated situations needing judgment</td>
+        <td style="padding:0.6em 0.8em;">Known failure modes: least privilege, isolation, policy</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:0.6em 0.8em; color:var(--text-dim);">Scope</td>
+        <td style="padding:0.6em 0.8em;">General, broad</td>
+        <td style="padding:0.6em 0.8em;">Domain-specific, your own policy</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:0.6em 0.8em; color:var(--text-dim);">Update cadence</td>
+        <td style="padding:0.6em 0.8em;">Tied to model retraining</td>
+        <td style="padding:0.6em 0.8em;">Independent, no retraining required</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:0.6em 0.8em; color:var(--text-dim);">Enforceability</td>
+        <td style="padding:0.6em 0.8em;">Best-effort, reduces risk</td>
+        <td style="padding:0.6em 0.8em;">Auditable, deterministic, logged</td>
+      </tr>
+      <tr>
+        <td style="padding:0.6em 0.8em; color:var(--text-dim);">Customization</td>
+        <td style="padding:0.6em 0.8em;">None, baked into weights</td>
+        <td style="padding:0.6em 0.8em;">Full, threshold tuning, domain rules</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="footnote">A well-aligned model still needs engineered, auditable controls for the three threat surfaces on the last slide. Neither tool substitutes for the other.</p>
+</section>
+
+<!-- SLIDE 5: What works now -->
+<section>
+  <div class="kicker">What actually works right now</div>
+  <h2>Standalone attacker vs. hybrid planner + controller</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <text class="box-label" x="180" y="30" text-anchor="middle" font-weight="600">Standalone LLM attacker</text>
+      <rect class="diag-rect" x="110" y="80" width="150" height="60" rx="6"/>
+      <text class="box-label" x="185" y="115" text-anchor="middle">Attacker LLM</text>
+      <path class="diag-arrow" d="M260,95 C 310,70 310,150 260,125" marker-end="url(#a3)"/>
+      <text class="box-sub" x="185" y="185" text-anchor="middle" fill="#c43e2c">stalls after a few steps</text>
+
+      <text class="box-label" x="680" y="30" text-anchor="middle" font-weight="600">Hybrid approach</text>
+      <rect class="diag-rect-defend" x="580" y="60" width="150" height="55" rx="6"/>
+      <text class="box-label" x="655" y="92" text-anchor="middle" font-size="13">LLM Planner</text>
+      <text class="box-sub" x="655" y="107" text-anchor="middle" font-size="9">strategic</text>
+      <line class="diag-arrow-defend" x1="655" y1="115" x2="655" y2="150" marker-end="url(#a3)"/>
+      <rect class="diag-rect-defend" x="580" y="155" width="150" height="55" rx="6"/>
+      <text class="box-label" x="655" y="187" text-anchor="middle" font-size="13">RL Controller</text>
+      <text class="box-sub" x="655" y="202" text-anchor="middle" font-size="9">tactical</text>
+      <line class="diag-arrow-defend" x1="730" y1="182" x2="790" y2="182" marker-end="url(#a3)"/>
+      <rect class="diag-rect" x="795" y="155" width="90" height="55" rx="6"/>
+      <text class="box-label" x="840" y="187" text-anchor="middle" font-size="12">Target</text>
+      <path class="diag-arrow" d="M840,155 C 840,100 760,70 735,78" marker-end="url(#a3)"/>
+      <text class="box-sub" x="655" y="245" text-anchor="middle" fill="#2d7a72">sustains multi-stage campaigns</text>
+    </svg>
+  </div>
+</section>
+
+<!-- SLIDE 6: Section divider -->
+<section>
+  <div class="section-divider">
+    <h1 style="font-size:1.6em;">From finding to demonstrated control</h1>
+    <p style="color:var(--text-dim); max-width:30em; margin-bottom:1em;">Four questions, each answered by one part of this pipeline:</p>
+    <ul class="takeaway-list" style="font-size:0.75em;">
+      <li>What risks does this system have?</li>
+      <li>What guardrails are in place?</li>
+      <li>Are those guardrails working?</li>
+      <li>How do we keep improving?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 7: 5a pipeline -->
+<section>
+  <div class="kicker">Finding to engineering requirement</div>
+  <h2>A finding is a spec for a detector</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 920 260" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect-attack" x="20" y="30" width="150" height="50" rx="6"/>
+      <text class="box-label" x="95" y="60" text-anchor="middle" font-size="12">Model-layer scan</text>
+      <text class="box-sub" x="95" y="95" text-anchor="middle" class="mono">garak</text>
+
+      <rect class="diag-rect-attack" x="20" y="150" width="150" height="50" rx="6"/>
+      <text class="box-label" x="95" y="180" text-anchor="middle" font-size="12">App-layer red team</text>
+      <text class="box-sub" x="95" y="215" text-anchor="middle" class="mono">promptfoo</text>
+
+      <line class="diag-arrow" x1="170" y1="55" x2="235" y2="105" marker-end="url(#a4)"/>
+      <line class="diag-arrow" x1="170" y1="175" x2="235" y2="125" marker-end="url(#a4)"/>
+
+      <rect class="diag-rect-defend" x="240" y="90" width="150" height="55" rx="6"/>
+      <text class="box-label" x="315" y="113" text-anchor="middle" font-size="12">Unified record</text>
+      <text class="box-sub" x="315" y="132" text-anchor="middle">EvalHub</text>
+
+      <line class="diag-arrow" x1="390" y1="117" x2="445" y2="117" marker-end="url(#a4)"/>
+      <rect class="diag-rect" x="450" y="90" width="140" height="55" rx="6"/>
+      <text class="box-label" x="520" y="113" text-anchor="middle" font-size="12">Signal</text>
+      <text class="box-sub" x="520" y="132" text-anchor="middle" font-size="10">where is it observable</text>
+
+      <line class="diag-arrow" x1="590" y1="117" x2="645" y2="117" marker-end="url(#a4)"/>
+      <rect class="diag-rect" x="650" y="90" width="130" height="55" rx="6"/>
+      <text class="box-label" x="715" y="113" text-anchor="middle" font-size="12">Detector</text>
+      <text class="box-sub" x="715" y="132" text-anchor="middle" font-size="10">input / mid / output</text>
+
+      <line class="diag-arrow" x1="780" y1="117" x2="815" y2="117"/>
+    </svg>
+  </div>
+  <p class="footnote">Two tool types answer different questions; both findings converge into one record.</p>
+</section>
+
+<!-- SLIDE 7b: Four types of guardrails -->
+<section>
+  <div class="kicker">What guardrails are in place?</div>
+  <h2>Four types, rigid rules to flexible judgment</h2>
+  <div class="cards">
+    <div class="card">
+      <h4>Pattern matching</h4>
+      <p>Regex-based. Catches predictable data: SSNs, credit cards, account numbers. Instant redaction.</p>
+    </div>
+    <div class="card">
+      <h4>Algorithmic</h4>
+      <p>Code-based logic: JSON schema validation, token limits, output structure checks.</p>
+    </div>
+    <div class="card">
+      <h4>Guardian models</h4>
+      <p>Small classifiers alongside the main model. Catch jailbreaks, toxic content, prompt injections.</p>
+    </div>
+    <div class="card">
+      <h4>Vector-based</h4>
+      <p>Converts input to embeddings, measures semantic distance from unsafe topics. Keeps a domain system on-topic.</p>
+    </div>
+  </div>
+  <p class="footnote">Layer more than one type. No single type catches everything on its own.</p>
+</section>
+
+<!-- SLIDE 7c: Six checkpoints -->
+<section>
+  <div class="kicker">Where guardrails get placed</div>
+  <h2>Six checkpoints map onto the three threat surfaces</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 920 300" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a7" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect-defend" x="20" y="100" width="130" height="55" rx="6"/>
+      <text class="box-label" x="85" y="132" text-anchor="middle" font-size="13">Input</text>
+      <line class="diag-arrow" x1="150" y1="127" x2="205" y2="127" marker-end="url(#a7)"/>
+
+      <rect class="diag-rect" x="210" y="90" width="140" height="75" rx="6"/>
+      <text class="box-label" x="280" y="122" text-anchor="middle" font-size="12">Agent core</text>
+      <text class="box-sub" x="280" y="140" text-anchor="middle" font-size="9">plan / state</text>
+
+      <line class="diag-arrow" x1="280" y1="90" x2="280" y2="55" marker-end="url(#a7)"/>
+      <rect class="diag-rect-defend" x="210" y="10" width="140" height="45" rx="6"/>
+      <text class="box-label" x="280" y="37" text-anchor="middle" font-size="12">Tool</text>
+
+      <line class="diag-arrow" x1="280" y1="165" x2="280" y2="205" marker-end="url(#a7)"/>
+      <rect class="diag-rect-defend" x="210" y="210" width="140" height="45" rx="6"/>
+      <text class="box-label" x="280" y="237" text-anchor="middle" font-size="12">Retrieval</text>
+
+      <line class="diag-arrow" x1="350" y1="127" x2="405" y2="127" marker-end="url(#a7)"/>
+      <rect class="diag-rect-defend" x="410" y="100" width="130" height="55" rx="6"/>
+      <text class="box-label" x="475" y="132" text-anchor="middle" font-size="13">Output</text>
+
+      <rect x="30" y="268" width="500" height="28" rx="5" fill="none" stroke="#5b6472" stroke-dasharray="4,3"/>
+      <text class="box-sub" x="280" y="286" text-anchor="middle" font-size="11">Agentic — monitors sub-agents, breaks loops and goal drift</text>
+
+      <rect x="20" y="0" width="900" height="298" rx="10" fill="none" stroke="#93700f" stroke-width="1.6" stroke-dasharray="2,4"/>
+      <text class="box-sub" x="800" y="20" font-size="11" fill="#93700f">Infrastructure — sandbox boundary</text>
+    </svg>
+  </div>
+  <p class="footnote">Tool checkpoint catches tool misuse · Infrastructure sandbox catches privilege escalation · Retrieval and Input catch context poisoning.</p>
+</section>
+
+<!-- SLIDE 8: 5b trade-off spectrum -->
+<section>
+  <div class="kicker">Guardrail design trade-offs</div>
+  <h2>Auditability vs. coverage is a real trade-off</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="130" x2="840" y2="130" stroke="#d6dbe2" stroke-width="2"/>
+      <text class="box-sub" x="60" y="155">low auditability</text>
+      <text class="box-sub" x="780" y="155">high auditability</text>
+      <text class="box-sub" x="60" y="175" fill="#5b6472">high coverage, high cost</text>
+      <text class="box-sub" x="700" y="175" fill="#5b6472">narrow, cheap, explainable</text>
+
+      <circle cx="150" cy="130" r="9" fill="#c43e2c"/>
+      <text class="box-label" x="150" y="100" text-anchor="middle" font-size="13">LLM-as-judge</text>
+
+      <circle cx="470" cy="130" r="9" fill="#93700f"/>
+      <text class="box-label" x="470" y="100" text-anchor="middle" font-size="13">Classifier-based</text>
+
+      <circle cx="770" cy="130" r="9" fill="#2d7a72"/>
+      <text class="box-label" x="770" y="100" text-anchor="middle" font-size="13">Deterministic rules</text>
+      <text class="box-sub" x="770" y="40" text-anchor="middle" fill="#2d7a72">highest-stakes gates belong here</text>
+      <line x1="770" y1="48" x2="770" y2="118" stroke="#2d7a72" stroke-width="1.3" stroke-dasharray="3,3"/>
+    </svg>
+  </div>
+  <p class="footnote">Programmable, rule-based policy (e.g. Colang / NeMo Guardrails) is one open-source example of the deterministic end.</p>
+</section>
+
+<!-- SLIDE 9: 5c remediation chain -->
+<section>
+  <div class="kicker">Demonstrating remediation</div>
+  <h2>Proving the control holds, not just claiming it</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 240" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect-attack" x="20" y="70" width="150" height="55" rx="6"/>
+      <text class="box-label" x="95" y="102" text-anchor="middle" font-size="12">Finding</text>
+      <line class="diag-arrow" x1="170" y1="97" x2="215" y2="97" marker-end="url(#a5)"/>
+
+      <rect class="diag-rect" x="220" y="70" width="150" height="55" rx="6"/>
+      <text class="box-label" x="295" y="102" text-anchor="middle" font-size="12">Control implemented</text>
+      <line class="diag-arrow" x1="370" y1="97" x2="415" y2="97" marker-end="url(#a5)"/>
+
+      <rect class="diag-rect" x="420" y="70" width="150" height="55" rx="6"/>
+      <text class="box-label" x="495" y="102" text-anchor="middle" font-size="12">Regression test</text>
+      <line class="diag-arrow" x1="570" y1="97" x2="615" y2="97" marker-end="url(#a5)"/>
+
+      <rect class="diag-rect-defend" x="620" y="70" width="160" height="55" rx="6"/>
+      <text class="box-label" x="700" y="102" text-anchor="middle" font-size="12">Retained trace</text>
+
+      <path class="diag-arrow" d="M700,70 C 700,10 95,10 95,65" marker-end="url(#a5)"/>
+
+      <rect class="diag-rect" x="440" y="160" width="150" height="50" rx="6" stroke-dasharray="3,3"/>
+      <text class="box-label" x="515" y="182" text-anchor="middle" font-size="11">Synthetic adversarial data</text>
+      <text class="box-sub" x="515" y="198" text-anchor="middle" font-size="9">NeMo Data Designer</text>
+      <line class="diag-arrow" x1="515" y1="160" x2="500" y2="128" marker-end="url(#a5)"/>
+    </svg>
+  </div>
+  <p class="footnote">The trace loop back to Finding is itself evidence that feeds future findings.</p>
+</section>
+
+<!-- SLIDE 9b: ASR escalation ladder -->
+<section>
+  <div class="kicker">Are those guardrails working?</div>
+  <h2>Measure with escalating pressure, not one static test</h2>
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:1em;">
+    <div style="width:100%; background:var(--attack); color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">Baseline: raw harmful prompt</div>
+    <div style="width:86%; background:#b03826; color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">+ System prompt override</div>
+    <div style="width:72%; background:#9c3222; color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">+ Social engineering</div>
+    <div style="width:58%; background:#862b1e; color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">+ Translation bypass</div>
+    <div style="width:44%; background:#70241a; color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">Adaptive LLM attack</div>
+  </div>
+  <p class="footnote">Attack success rate = share of probes that bypass the guardrail. Lower is stronger. Each stage runs only if the prior one was blocked, so the ladder shows exactly where coverage actually ends.</p>
+</section>
+
+<!-- SLIDE 10: 5d loop -->
+<section>
+  <div class="kicker">Mitigation is not a terminal state</div>
+  <h2>A loop, not a pipeline that ends</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a6" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6472"/></marker></defs>
+
+      <rect class="diag-rect-attack" x="275" y="20" width="150" height="55" rx="6"/>
+      <text class="box-label" x="350" y="52" text-anchor="middle" font-size="13">Red team</text>
+
+      <rect class="diag-rect-defend" x="500" y="150" width="150" height="55" rx="6"/>
+      <text class="box-label" x="575" y="182" text-anchor="middle" font-size="13">Guardrail</text>
+
+      <rect class="diag-rect" x="275" y="340" width="150" height="55" rx="6"/>
+      <text class="box-label" x="350" y="372" text-anchor="middle" font-size="13">Regression suite</text>
+
+      <rect class="diag-rect" x="50" y="150" width="150" height="55" rx="6"/>
+      <text class="box-label" x="125" y="178" text-anchor="middle" font-size="12">Production trace</text>
+      <text class="box-label" x="125" y="195" text-anchor="middle" font-size="12">monitoring</text>
+
+      <path class="diag-arrow" d="M420,45 C 480,70 530,110 560,150" marker-end="url(#a6)"/>
+      <path class="diag-arrow" d="M570,205 C 540,270 460,330 430,355" marker-end="url(#a6)"/>
+      <path class="diag-arrow" d="M280,365 C 200,330 150,260 130,205" marker-end="url(#a6)"/>
+      <path class="diag-arrow" d="M140,150 C 190,100 240,65 280,45" marker-end="url(#a6)"/>
+
+      <text class="box-sub" x="440" y="100" font-size="10">event-triggered</text>
+      <text class="box-sub" x="490" y="280" font-size="10">scheduled</text>
+      <text class="box-sub" x="160" y="280" font-size="10">research-triggered</text>
+    </svg>
+  </div>
+</section>
+
+<!-- SLIDE 11: Close -->
+<section>
+  <div class="kicker">Takeaways</div>
+  <h2>Three things to take with you</h2>
+  <ul class="takeaway-list">
+    <li>Agentic attacks live in the trajectory, not the prompt. Test the whole path, not one turn.</li>
+    <li>Every red-team finding becomes a permanent regression test, tied to a retained trace. That's the difference between patched and provably patched.</li>
+    <li>Mitigation has no finish line. Build the re-test loop into the architecture from day one, not as an afterthought.</li>
+  </ul>
+  <p class="footnote">This field is younger than it looks. Most of what "good" looks like is still being figured out in public.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js" crossorigin="anonymous"></script>
+<script>
+  window.addEventListener('error', function (e) {
+    console.error('Deck load error:', e.message, e.filename, e.lineno);
+  });
+
+  Reveal.initialize({
+    hash: false,
+    center: false,
+    transition: 'fade',
+    width: 1100,
+    height: 720,
+    margin: 0.06,
+    plugins: [ RevealNotes ]
+  });
+</script>
+</body>
+</html>
