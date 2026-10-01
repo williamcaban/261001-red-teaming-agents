@@ -618,26 +618,41 @@
   <div class="kicker">Guardrail design trade-offs</div>
   <h2>Auditability vs. coverage is a real trade-off</h2>
   <div class="diagram-wrap">
-    <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
-      <line x1="60" y1="130" x2="840" y2="130" stroke="#d6dbe2" stroke-width="2"/>
-      <text class="box-sub" x="60" y="155">low auditability</text>
-      <text class="box-sub" x="780" y="155">high auditability</text>
-      <text style="fill:#5b6472;" class="box-sub" x="60" y="175">high coverage, high cost</text>
-      <text style="fill:#5b6472;" class="box-sub" x="700" y="175">narrow, cheap, explainable</text>
+    <svg viewBox="0 0 900 244" xmlns="http://www.w3.org/2000/svg">
+      <line x1="40" y1="140" x2="860" y2="140" stroke="#d6dbe2" stroke-width="2"/>
 
-      <circle cx="150" cy="130" r="9" fill="#c43e2c"/>
-      <text class="box-label" x="150" y="100" text-anchor="middle" font-size="13">LLM-as-judge</text>
+      <path d="M520,86 V74 H820 V86" fill="none" stroke="#2d7a72" stroke-width="1.3" stroke-dasharray="3,3"/>
+      <text class="box-sub" x="670" y="62" text-anchor="middle" style="fill:#2d7a72; font-size:12px;">highest-stakes gates belong here</text>
 
-      <circle cx="470" cy="130" r="9" fill="#93700f"/>
-      <text class="box-label" x="470" y="100" text-anchor="middle" font-size="13">Classifier-based</text>
+      <circle cx="130" cy="140" r="9" fill="#c43e2c"/>
+      <text class="box-label" x="130" y="112" text-anchor="middle">Guardian models</text>
+      <text class="box-sub" x="130" y="172" text-anchor="middle" style="font-size:12px;">learned, probabilistic</text>
+      <text class="box-sub" x="130" y="189" text-anchor="middle" style="font-size:12px;">incl. LLM-as-judge</text>
 
-      <circle cx="770" cy="130" r="9" fill="#2d7a72"/>
-      <text class="box-label" x="770" y="100" text-anchor="middle" font-size="13">Deterministic rules</text>
-      <text style="fill:#2d7a72;" class="box-sub" x="770" y="40" text-anchor="middle">highest-stakes gates belong here</text>
-      <line x1="770" y1="48" x2="770" y2="118" stroke="#2d7a72" stroke-width="1.3" stroke-dasharray="3,3"/>
+      <circle cx="340" cy="140" r="9" fill="#93700f"/>
+      <text class="box-label" x="340" y="112" text-anchor="middle">Vector-based</text>
+      <text class="box-sub" x="340" y="172" text-anchor="middle" style="font-size:12px;">similarity threshold</text>
+
+      <circle cx="560" cy="140" r="9" fill="#2d7a72"/>
+      <text class="box-label" x="560" y="112" text-anchor="middle">Algorithmic</text>
+      <text class="box-sub" x="560" y="172" text-anchor="middle" style="font-size:12px;">code-based checks</text>
+
+      <circle cx="780" cy="140" r="9" fill="#2d7a72"/>
+      <text class="box-label" x="780" y="112" text-anchor="middle">Pattern matching</text>
+      <text class="box-sub" x="780" y="172" text-anchor="middle" style="font-size:12px;">regex and fixed rules</text>
+
+      <text class="box-sub" x="40" y="218">low auditability</text>
+      <text class="box-sub" x="40" y="236">high coverage, high cost</text>
+      <text class="box-sub" x="860" y="218" text-anchor="end">high auditability</text>
+      <text class="box-sub" x="860" y="236" text-anchor="end">narrow, cheap, explainable</text>
     </svg>
   </div>
-  <p class="footnote">Programmable, rule-based policy (e.g. Colang / NeMo Guardrails) is one open-source example of the deterministic end.</p>
+  <p class="footnote">All four types from the last slide, placed by how easily you can audit them. LLM-as-judge is one way to run a guardian model. Programmable, rule-based policy (e.g. Colang / NeMo Guardrails) is one open-source example of the deterministic end.</p>
+  <aside class="notes">
+    Place each of the four types on one line. Pattern matching and algorithmic checks are deterministic: the same input gives the same answer, and you can read the rule that fired. They cover little, so they suit the highest-stakes gates.
+    Vector-based checks sit in the middle. The decision is a distance against a threshold, which you can log, but the embedding itself is opaque.
+    Guardian models, including LLM-as-judge, cover the most ground and are the hardest to audit. Layer them: deterministic gates for what must never happen, learned checks for breadth.
+  </aside>
 </section>
 
 <!-- SLIDE 16: Proving the control holds -->
