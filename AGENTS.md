@@ -156,16 +156,29 @@ dense tables), `ul.tight`, `.callout` (add `.defend` for the green variant),
 `.two-col`, and `.takeaway-list.compact`. Give every new slide an
 `<aside class="notes">` block.
 
-The last two slides are QR codes (the online deck and the owner's LinkedIn
-profile). They are inline SVG, so they render offline and need no library at
-runtime. They were generated with the Python `segno` package at error level M.
-If either URL changes, regenerate the SVG and re-scan the rendered slide with a
-decoder (OpenCV's `QRCodeDetector` works) before pushing. Style the URL and
-name lines with `.reveal p.qr-url` and `.reveal p.qr-name`, not bare classes.
+The last slide holds two QR codes side by side (the online deck and the
+owner's LinkedIn profile). They are inline SVG, so they render offline and need
+no library at runtime. They were generated with the Python `segno` package at
+error level M. If either URL changes, regenerate the SVG and re-scan the
+rendered slide with a decoder (OpenCV's `QRCodeDetector.detectAndDecodeMulti`
+works) before pushing. Style the URL, name, and label lines with
+`.reveal p.qr-url`, `.reveal p.qr-label`, and `.reveal p.qr-name`, not bare
+classes.
+
+Speaker notes are written for a presenter, not for the audience. Every slide
+has an `<aside class="notes">` block made of short labeled paragraphs in this
+order: Say, then Show or Point to, then Ask the room or If asked, then Source
+where a fact comes from outside, then Next for the hand-off to the following
+slide. Slides that can be cut for time start with an Optional paragraph, and
+the title slide's notes list which ones (8, 14, 21, 29, 30). Update that list
+when you add, remove, or renumber slides. Do not put internal material or
+unverified claims in notes. The source is public.
 
 Full screen is built in. Reveal handles the `F` key, and a small
-`#fs-btn` button calls the Fullscreen API and hides itself while in full
-screen. Keep both.
+`#fs-btn` button calls the Fullscreen API. It hides itself while in full
+screen and inside embedded views such as the speaker-view previews. Keep both.
+For a PDF backup, open the deck URL with `?print-pdf` added and print to PDF.
+The print rule in the stylesheet keeps the output at one page per slide.
 
 Before pushing, check each slide in a browser at a few window shapes. Look for
 `scrollHeight > 720`, SVG text outside its box or viewBox, and console

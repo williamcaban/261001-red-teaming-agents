@@ -142,12 +142,23 @@
   }
   .fs-btn:hover, .fs-btn:focus-visible { opacity: 1; color: var(--text); border-color: var(--text-dim); }
   .fs-btn[hidden] { display: none; }
-  @media print { .fs-btn { display: none; } }
+  @media print {
+    .fs-btn { display: none; }
+    html.print-pdf .reveal .slides .pdf-page:last-child { page-break-after: avoid; break-after: avoid; }
+  }
 
   .qr-panel { background: #ffffff; border: 1px solid var(--line); border-radius: 10px; padding: 18px; line-height: 0; }
   .qr-panel svg { width: 340px; height: 340px; display: block; }
   .reveal p.qr-url { font-family: 'IBM Plex Mono', monospace; font-size: 0.62em; color: var(--text); margin: 0 0 1em 0; }
   .reveal p.qr-name { font-size: 1.1em; font-weight: 600; margin: 0 0 0.2em 0; }
+
+  .two-col.qr-pair { justify-content: center; gap: 3.2em; align-items: flex-start; margin-top: 0.5em; }
+  .two-col.qr-pair > div { flex: 0 0 auto; }
+  .qr-card { text-align: center; }
+  .reveal p.qr-label { font-size: 0.8em; font-weight: 600; margin: 0 0 0.5em 0; text-align: center; }
+  .qr-pair .qr-panel { display: inline-block; }
+  .qr-pair .qr-panel svg { width: 270px; height: 270px; }
+  .reveal .qr-pair p.qr-url { font-size: 0.5em; text-align: center; margin: 0.8em 0 0 0; }
 </style>
 </head>
 <body>
@@ -163,7 +174,10 @@
   <p class="meta">William Caban</p>
   <p class="hint">Press F for full screen. S opens speaker notes. ? lists shortcuts.</p>
   <aside class="notes">
-    Open with the incident, not the title. Let the title card sit for a beat, then move straight into the hook.
+    <p><strong>Setup.</strong> Press S for the speaker view (notes, timer, next slide). Allow pop-ups for this site first. Press F for full screen on the presentation window and Esc to leave it.</p>
+    <p><strong>Setup.</strong> Load the deck once on the venue network. It pulls reveal.js and fonts from CDNs. Backup: open the deck URL with ?print-pdf added and print to PDF.</p>
+    <p><strong>Pacing.</strong> Plan on one to two minutes per slide. Slides marked Optional in their notes can be cut: 8, 14, 21, 29, and 30.</p>
+    <p><strong>Say.</strong> Open with the incident, not the title. Let the card sit for a beat, then go straight to the hook. Tell people the last slide has a link so they can follow on their own device.</p>
   </aside>
 </section>
 
@@ -203,6 +217,13 @@
     </svg>
   </div>
   <p style="margin-top:0.8em; color:var(--text-dim); font-size:0.65em;">Your chatbot red-teaming checklist does not cover this.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> Every step in this chain is fine on its own. A prompt comes in, then a tool call, then another tool call. Nothing trips a filter. The last step produces the harm.</p>
+    <p><strong>Show.</strong> The three 'looks fine' labels, then 'this is the attack'.</p>
+    <p><strong>Hypothetical example.</strong> An agent asked to tidy a repository lists files, reads a config, then deletes a directory. Each call is inside its permissions. Only the sequence is the problem. Say it is hypothetical.</p>
+    <p><strong>Say.</strong> Your chatbot red-teaming checklist does not cover this.</p>
+    <p><strong>Next.</strong> Why is this a different problem? Because the system is a loop.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 3: Why this is a different problem -->
@@ -254,6 +275,12 @@
       <text class="box-sub" x="700" y="312" text-anchor="middle" style="font-size:12px; fill:#c43e2c;">attack entry points</text>
     </svg>
   </div>
+  <aside class="notes">
+    <p><strong>Say.</strong> Left is a single-turn model: one prompt, one output, one check. You can enumerate it. Right is an agentic system: plan, call a tool, update state, plan again. Every trip around the loop is a chance to be redirected.</p>
+    <p><strong>Show.</strong> The three red entry points: other agents, persistent state, and tool access. A single-turn model has none of them.</p>
+    <p><strong>If asked.</strong> 'Isn't this just prompt injection?' Injection is one way in. The difference is what the agent can do afterward. Tools and state let a small deviation compound.</p>
+    <p><strong>Next.</strong> Three attack surfaces this creates.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 4: Threat model -->
@@ -278,6 +305,12 @@
     </div>
   </div>
   <p class="footnote">Each step can look fine in isolation. Only the trajectory is the attack.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> Three surfaces that do not exist in a chatbot. Tool misuse: a benign-looking call to a real tool, chained toward an unintended effect. Privilege escalation: delegated actions accumulate access the agent was never meant to hold alone. Memory or context poisoning: state carried across turns gets corrupted mid-task.</p>
+    <p><strong>Point to.</strong> The footnote. Each step can look fine in isolation. Only the trajectory is the attack.</p>
+    <p><strong>Source.</strong> These line up with the OWASP Top 10 for Agentic Applications (2026): tool misuse and exploitation, agent identity and privilege abuse, and memory and context poisoning.</p>
+    <p><strong>Next.</strong> Why a well-aligned model does not close this.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 5: Alignment vs guardrails -->
@@ -321,6 +354,13 @@
     </tbody>
   </table>
   <p class="footnote">A well-aligned model still needs engineered, auditable controls for the three threat surfaces on the last slide. Neither tool substitutes for the other.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> The first question I get is whether a well-aligned model is enough. No. They solve different problems.</p>
+    <p><strong>Decision rule.</strong> Can you list the failure triggers in advance? If yes, build a structural control: a guardrail, least privilege, an authorization check. If not, alignment has to carry it.</p>
+    <p><strong>Point to.</strong> The enforceability row. Alignment is best effort. Guardrails are auditable, deterministic, and logged.</p>
+    <p><strong>If asked.</strong> 'Do I still need alignment?' Yes, for judgment calls your architecture cannot anticipate. It just cannot be your only control.</p>
+    <p><strong>Next.</strong> What attackers can do now, which sets the bar for your tests.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 6: Standalone vs hybrid attacker -->
@@ -352,6 +392,12 @@
       <text style="fill:#2d7a72;" class="box-sub" x="655" y="245" text-anchor="middle">sustains multi-stage campaigns</text>
     </svg>
   </div>
+  <aside class="notes">
+    <p><strong>Say.</strong> Attackers are improving too. A standalone attacker model tends to stall after a few steps. A hybrid pairs a language-model planner for strategy with a reinforcement-learning controller for tactics, and it sustains multi-stage campaigns.</p>
+    <p><strong>Why it matters.</strong> Your tests have to be able to run long chains, because real attackers can.</p>
+    <p><strong>Be ready.</strong> The slide states the planner-plus-controller result without a citation. Have your source at hand if someone asks.</p>
+    <p><strong>Next.</strong> Before the pipeline, two design principles that shrink the attack surface.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 7: Rule of two -->
@@ -387,8 +433,12 @@
   </div>
   <p class="footnote">Simon Willison named the combination the lethal trifecta (June 2025). Meta's Agents Rule of Two (October 2025) turns it into a design constraint.</p>
   <aside class="notes">
-    Walk the three powers and ask which of the room's agents hold all three. Most coding agents do by default: they read issues and repos, hold tokens, and run network commands.
-    The fix is to remove one power per session or insert a gate that does not rely on the model. A research agent loses outward action. A browsing agent loses sensitive access.
+    <p><strong>Say.</strong> Three powers: untrusted input, sensitive access, outward action. Any two are manageable. All three in one session is the dangerous combination: an attacker plants text, the agent reads it, and the agent has both the data and a way out.</p>
+    <p><strong>Ask the room.</strong> Which of your agents hold all three? Most coding agents do by default. They read issues and repos, hold tokens, and run network commands.</p>
+    <p><strong>Say.</strong> The fix is to remove one power per session, or put in a gate that does not rely on the model. A research agent loses outward action. A browsing agent loses sensitive access.</p>
+    <p><strong>If asked.</strong> 'Isn't a human gate just click fatigue?' It is if it fires often. Gate only rare, high-impact actions, and show the exact action and the data involved.</p>
+    <p><strong>Source.</strong> Simon Willison named the lethal trifecta in June 2025. Meta published the Agents Rule of Two in October 2025.</p>
+    <p><strong>Next.</strong> A structural pattern that enforces this.</p>
   </aside>
 </section>
 
@@ -435,9 +485,12 @@
   </div>
   <p class="footnote">Pattern from CaMeL (Google DeepMind, 2025). Untrusted text can change a plan's values, never the plan. Example policy: a value from an email cannot become the recipient of a send action.</p>
   <aside class="notes">
-    This is the strongest structural defense in the literature, and it works by construction rather than by detection.
-    The planner never sees untrusted text, so injected instructions cannot alter control flow. The quarantined model can read anything but cannot call a tool.
-    Every value carries its provenance, so policy can say where a value is allowed to flow. Be honest about the cost: you give up agents that rewrite their own plan from what they read, because some tasks need the plan to adapt to what the data says.
+    <p><strong>Optional.</strong> Skip if you are short on time. The talk still works without it.</p>
+    <p><strong>Say.</strong> This is the strongest structural defense in the literature, and it works by construction, not by detection. A planner sees only the trusted user request and writes the plan. A quarantined model reads untrusted data but has no tools. An interpreter runs the plan, tracks where each value came from, and applies policy at every call.</p>
+    <p><strong>Result.</strong> Injected text can change values. It cannot change the plan. Example: a value that came from an email cannot become the recipient of a send action.</p>
+    <p><strong>Be honest about the cost.</strong> You give up agents that rewrite their own plan based on what they read.</p>
+    <p><strong>Source.</strong> CaMeL, Google DeepMind, 2025.</p>
+    <p><strong>Next.</strong> Now the pipeline: from a finding to a demonstrated control.</p>
   </aside>
 </section>
 
@@ -453,6 +506,11 @@
       <li>How do we keep improving?</li>
     </ul>
   </div>
+  <aside class="notes">
+    <p><strong>Say.</strong> Four questions run the rest of the talk. What risks does this system have? What guardrails are in place? Are those guardrails working? How do we keep improving?</p>
+    <p><strong>Say.</strong> We will answer them for the model and application first. Then we will come back and ask the first question again about the thing that runs the agent, the harness.</p>
+    <p><strong>Next.</strong> How a finding becomes a requirement.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 10: Finding to detector -->
@@ -490,6 +548,13 @@
     </svg>
   </div>
   <p class="footnote">Two tool types answer different questions; both findings converge into one record.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> Two tools, two questions. garak probes the model endpoint, guardrails included. promptfoo red-teams the application layer. Both feed one record.</p>
+    <p><strong>Say.</strong> A finding is only useful once it becomes a spec for a detector. Where is it observable: at the input, mid-trajectory, or at the output? What would catch it there?</p>
+    <p><strong>Point to.</strong> Signal, then detector. The unified record is where evidence lives. EvalHub is one open-source example of that record.</p>
+    <p><strong>If asked.</strong> 'Why not one tool?' They see different layers. The next tools slide spells that out.</p>
+    <p><strong>Next.</strong> Which tool for which layer.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 11: Tool by layer under test -->
@@ -510,9 +575,11 @@
   </table>
   <p class="footnote">garak: NVIDIA, Apache 2.0. promptfoo: MIT, joined OpenAI in March 2026 and stayed open source. Inspect: UK AI Security Institute, with a community catalog in inspect_evals. One tool is not a program. Each answers one question, and the record has to hold results from all of them.</p>
   <aside class="notes">
-    Do not pitch a favorite. The point is that each tool sees a different layer.
-    garak probes the endpoint, so it tests guardrails as deployed. promptfoo is config-driven and fits CI for the application layer. Inspect gives you task, solver, and scorer structure with sandboxed environments, plus a large community catalog.
-    MiDojo is the one that tests an agent with its real tools. Petri audits dispositions such as deception and sycophancy, which an attack-success number does not capture.
+    <p><strong>Say.</strong> Do not pitch a favorite. The point is that each tool sees a different layer.</p>
+    <p><strong>Walk down.</strong> garak probes the endpoint, so it tests guardrails as deployed. promptfoo is config-driven and fits CI for the application layer. Inspect gives you task, solver, and scorer structure with sandboxed environments, plus a large community catalog. MiDojo tests an agent with its real tools. Petri audits dispositions such as deception and sycophancy, which an attack-success number does not capture.</p>
+    <p><strong>Status.</strong> garak: NVIDIA, Apache 2.0. promptfoo: MIT, joined OpenAI in March 2026 and stayed open source. Inspect: UK AI Security Institute.</p>
+    <p><strong>Say.</strong> One tool is not a program. The record has to hold results from all of them.</p>
+    <p><strong>Next.</strong> The controls you put in place.</p>
   </aside>
 </section>
 
@@ -539,6 +606,11 @@
     </div>
   </div>
   <p class="footnote">Layer more than one type. No single type catches everything on its own.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> Four types, from rigid to flexible. Pattern matching is regex: instant, precise for known formats like SSNs and card numbers. Algorithmic is code-based: schema validation, token limits, structure checks. Guardian models are small classifiers beside the main model for jailbreaks, toxicity, and injections. Vector-based converts input to embeddings and measures distance from unsafe topics.</p>
+    <p><strong>Say.</strong> No single type catches everything. Layer more than one.</p>
+    <p><strong>Next.</strong> Where in the system these go.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 13: Six checkpoints -->
@@ -577,6 +649,12 @@
     </svg>
   </div>
   <p class="footnote">Tool checkpoint catches tool misuse · Infrastructure sandbox catches privilege escalation · Retrieval and Input catch context poisoning.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> Placement matters as much as type. Six checkpoints: input, tool, retrieval, output, agentic, and infrastructure.</p>
+    <p><strong>Walk the footnote.</strong> The tool checkpoint catches tool misuse. The infrastructure sandbox catches privilege escalation. Retrieval and input catch context poisoning. The agentic checkpoint is the circuit breaker for loops and goal drift.</p>
+    <p><strong>Foreshadow.</strong> Point at the outer dotted box. That infrastructure boundary is the sandbox, and it gets its own section later.</p>
+    <p><strong>Next.</strong> Who owns each of these layers.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 14: Layers only narrow -->
@@ -612,9 +690,12 @@
   </div>
   <p class="footnote">Same shape as IAM boundaries and network policy: an explicit deny higher up wins.</p>
   <aside class="notes">
-    Centralized enforcement alone never fits every application, and fully local enforcement drifts. Splitting ownership solves both.
-    The platform team sets what must hold everywhere. Application teams own domain risk. Agent and tool layers sit closest to the action.
-    The rule that makes this auditable: a layer can only narrow. If a team could relax the baseline, the baseline would be a suggestion.
+    <p><strong>Optional.</strong> Skip if you are short on time. The talk still works without it.</p>
+    <p><strong>Say.</strong> Centralized enforcement alone never fits every application, and fully local enforcement drifts. Splitting ownership solves both.</p>
+    <p><strong>Walk down.</strong> The platform team sets what must hold everywhere. Application teams own domain risk. Agent and tool layers sit closest to the action.</p>
+    <p><strong>The rule.</strong> A layer can only narrow. If a team could relax the baseline, the baseline would be a suggestion.</p>
+    <p><strong>If asked.</strong> 'How is this enforced?' The same way IAM boundaries and network policy are: an explicit deny higher up wins.</p>
+    <p><strong>Next.</strong> Not all controls are equally auditable.</p>
   </aside>
 </section>
 
@@ -654,9 +735,10 @@
   </div>
   <p class="footnote">All four types from the last slide, placed by how easily you can audit them. LLM-as-judge is one way to run a guardian model. Programmable, rule-based policy (e.g. Colang / NeMo Guardrails) is one open-source example of the deterministic end.</p>
   <aside class="notes">
-    Place each of the four types on one line. Pattern matching and algorithmic checks are deterministic: the same input gives the same answer, and you can read the rule that fired. They cover little, so they suit the highest-stakes gates.
-    Vector-based checks sit in the middle. The decision is a distance against a threshold, which you can log, but the embedding itself is opaque.
-    Guardian models, including LLM-as-judge, cover the most ground and are the hardest to audit. Layer them: deterministic gates for what must never happen, learned checks for breadth.
+    <p><strong>Say.</strong> These are the four types from two slides ago, placed by how easily you can audit them.</p>
+    <p><strong>Walk across.</strong> Pattern matching and algorithmic checks are deterministic. The same input gives the same answer, and you can read the rule that fired. They cover little, so they suit the highest-stakes gates. Vector-based sits in the middle: the decision is a distance against a threshold, which you can log, but the embedding is opaque. Guardian models, including an LLM as judge, cover the most ground and are the hardest to audit.</p>
+    <p><strong>Say.</strong> Layer them. Deterministic gates for what must never happen. Learned checks for breadth.</p>
+    <p><strong>Next.</strong> How do you prove a control works?</p>
   </aside>
 </section>
 
@@ -694,6 +776,13 @@
     </svg>
   </div>
   <p class="footnote">The trace loop back to Finding is itself evidence that feeds future findings.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> A claim is not a proof. The chain is: finding, control implemented, regression test, retained trace. The trace is the evidence.</p>
+    <p><strong>Point to.</strong> The loop back to the finding. A retained trace is itself a source of future findings.</p>
+    <p><strong>Point to.</strong> Synthetic adversarial data feeds the regression test, so the suite grows past what you found by hand.</p>
+    <p><strong>Say.</strong> That is the difference between patched and provably patched.</p>
+    <p><strong>Next.</strong> Testing the control under pressure.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 17: Escalation ladder -->
@@ -708,6 +797,13 @@
     <div style="width:44%; background:#70241a; color:#fff; text-align:center; padding:0.6em; border-radius:5px; font-size:0.72em; font-weight:600;">Adaptive LLM attack</div>
   </div>
   <p class="footnote">Attack success rate = share of probes that bypass the guardrail. Lower is stronger. Each stage runs only if the prior one was blocked, so the ladder shows exactly where coverage actually ends.</p>
+  <aside class="notes">
+    <p><strong>Say.</strong> One static test tells you very little. Escalate the pressure. Baseline, then a system prompt override, then social engineering, then a translation bypass, then an adaptive model-driven attack.</p>
+    <p><strong>Define.</strong> Attack success rate is the share of probes that get through the guardrail. Lower is stronger. Each stage runs only if the prior one was blocked, so the ladder shows exactly where coverage ends.</p>
+    <p><strong>Careful.</strong> The narrowing bars are a picture of the idea. They are not measured data. Say so if anyone reads them as numbers.</p>
+    <p><strong>Say.</strong> ASR before and after you add a control is your measurable evidence of improvement.</p>
+    <p><strong>Next.</strong> How the adaptive attacks actually work.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 18: Adaptive attack loop -->
@@ -753,9 +849,11 @@
   </div>
   <p class="footnote">One classifier scores every response the same way, so strategies stay comparable. The last rung uses a challenger model that rewrites the prompt from the target's refusals. garak (atkgen, TAP-style probes) and promptfoo (iterative and tree strategies) implement this family.</p>
   <aside class="notes">
-    A static prompt list tests the easiest attacks. Adaptive campaigns use the target's answers as feedback.
-    Each prompt starts at baseline and only moves up a rung if the target refused or deflected. A compliant answer stops the escalation and counts as a success.
-    The result is the hardest attack your system currently needs to survive, plus the exact rung where defenses give out. The consistent classifier matters: without it, strategy-to-strategy comparisons are noise.
+    <p><strong>Say.</strong> A static prompt list tests the easiest attacks. Adaptive campaigns use the target's answers as feedback.</p>
+    <p><strong>Walk the loop.</strong> Each prompt starts at baseline and moves up a rung only if the target refused or deflected. A compliant answer stops the escalation and counts as a success.</p>
+    <p><strong>Say.</strong> The result is the hardest attack your system currently needs to survive, plus the exact rung where defenses give out. The single classifier matters: without it, strategy-to-strategy comparisons are noise.</p>
+    <p><strong>Source.</strong> garak has atkgen and TAP-style probes. promptfoo has iterative and tree strategies. Both implement this family.</p>
+    <p><strong>Next.</strong> Making the attacks specific to your domain.</p>
   </aside>
 </section>
 
@@ -804,9 +902,11 @@
   <div class="callout">Example: a healthcare provider adds patient-data privacy, diagnostic misinformation, and off-label advice. None of them appear in a generic scan.</div>
   <p class="footnote">OWASP, NIST, and ATLAS tell you where to start. Your policies tell you what matters in your environment.</p>
   <aside class="notes">
-    Generic taxonomies are necessary and not sufficient. The domain-specific risks are the ones a bank or a hospital actually cares about.
-    Write each policy as a category with a plain-language description. A challenger model generates attack prompts per category and varies them by region, language, and style. Review them, version the dataset, and feed the scanner.
-    Hand-written cases from your security team merge into the same dataset. Both paths produce one run and one report.
+    <p><strong>Say.</strong> Generic taxonomies are necessary and not sufficient. The risks a bank or a hospital cares about are domain-specific.</p>
+    <p><strong>Walk the flow.</strong> Write each policy as a category with a plain-language description. A challenger model generates attack prompts per category and varies them by region, language, and style. A person reviews them. You version the dataset and feed the scanner.</p>
+    <p><strong>Say.</strong> Hand-written cases from your security team merge into the same dataset. One run, one report.</p>
+    <p><strong>Ask the room.</strong> What harm categories matter to you that OWASP and NIST do not cover? That list is your input.</p>
+    <p><strong>Next.</strong> How to read the report without fooling yourself.</p>
   </aside>
 </section>
 
@@ -831,9 +931,11 @@
   </ul>
   <p class="footnote">A defense that blocks attacks by making the agent useless is not a defense. Report utility next to security.</p>
   <aside class="notes">
-    High-stakes teams get burned by confident numbers with no provenance. Separate what you measured from what you inferred.
-    The reachability rule is the one most people miss: if an injected payload never reached the agent, the run says nothing about resistance. Count it as not applicable.
-    The same discipline applies to coverage. A probe you did not run is a gap in the report, not a pass.
+    <p><strong>Say.</strong> High-stakes teams get burned by confident numbers with no provenance. Separate what you measured from what you inferred.</p>
+    <p><strong>Walk the table.</strong> Direct measurements, such as attack success rate and false positive rate, come from guardrail decisions and probe results. You can gate a release on them. Outcome proxies, such as re-prompt rate, are advisory. Correlation in traces is not causation.</p>
+    <p><strong>The one people miss.</strong> If an injected payload never reached the agent, the run says nothing about resistance. Count it as not applicable, not a pass. The same goes for coverage: a probe you did not run is a gap, not a pass.</p>
+    <p><strong>Say.</strong> A defense that blocks attacks by making the agent useless is not a defense. Report utility next to security.</p>
+    <p><strong>Next.</strong> Turning evidence into a controlled release.</p>
   </aside>
 </section>
 
@@ -871,9 +973,11 @@
   </div>
   <p class="footnote">Thresholds are set per environment with a named owner. The package author cannot be the only approver. Adapting a definition creates a new package, which needs fresh evidence.</p>
   <aside class="notes">
-    This is change management applied to safety controls. A definition is reusable and immutable per version.
-    A package scopes it to one application and has to pass an evaluation gate with thresholds for false positives, false negatives, attack success, and latency. Two people approve.
-    At runtime, drift detection watches for configuration changes, and rollback means reapplying the last approved immutable package, not editing in place.
+    <p><strong>Optional.</strong> Skip if you are short on time. The talk still works without it.</p>
+    <p><strong>Say.</strong> This is change management applied to safety controls. A definition is reusable and immutable per version.</p>
+    <p><strong>Walk left to right.</strong> A package scopes a definition to one application and has to pass an evaluation gate with thresholds for false positives, false negatives, attack success, and latency. Two people approve. At runtime, drift detection watches for configuration changes. Rollback means reapplying the last approved immutable package, not editing in place.</p>
+    <p><strong>Say.</strong> The package author cannot be the only approver.</p>
+    <p><strong>Next.</strong> Now the second half: the thing that runs the agent.</p>
   </aside>
 </section>
 
@@ -889,8 +993,10 @@
     </ul>
   </div>
   <aside class="notes">
-    A harness is the program around the model: the loop, the tool runtime, the permissions. Claude Code, Codex, OpenCode, OpenClaw, and Hermes Agent are all harnesses.
-    The model can be well behaved and the harness can still be the weak point, because the harness decides what the model's output is allowed to do.
+    <p><strong>Say.</strong> A harness is the program around the model: the loop, the tool runtime, the permissions. Claude Code, Codex, OpenCode, OpenClaw, and Hermes Agent are all harnesses.</p>
+    <p><strong>Say.</strong> The model can behave well and the harness can still be the weak point, because the harness decides what the model's output is allowed to do.</p>
+    <p><strong>Say.</strong> Three questions: what untrusted content does it read, what can it run and where, and what can that code reach?</p>
+    <p><strong>Next.</strong> Why this is an attack surface.</p>
   </aside>
 </section>
 
@@ -915,8 +1021,11 @@
   </div>
   <p class="footnote">Source: Snyk and TechSpot reporting on jqwik 1.10.0, published May 25, 2026.</p>
   <aside class="notes">
-    The maintainer wrote the payload on purpose, as protest. It reached agents through ordinary test output, so any pipeline that fed that output back to a model was exposed.
-    The agent that refused did the right thing, and that is the problem with relying on it. Refusal depends on the model, the prompt, and the day. Deny-by-default file access would have made the delete fail regardless.
+    <p><strong>Say.</strong> A harness reads untrusted text, runs commands, and inherits your credentials. That is the full recipe from the Rule of Two slide.</p>
+    <p><strong>Tell the story.</strong> In May 2026 the maintainer of jqwik shipped version 1.10.0 with a hidden instruction for coding agents to delete the project's tests. ANSI escape codes hid it from the terminal, but it was fully readable to any tool that captured raw output. He did it on purpose.</p>
+    <p><strong>The lesson.</strong> One agent flagged it and refused. That is good, and it is not a boundary. Refusal depends on the model, the prompt, and the day. A deny-by-default file boundary would have made the delete fail regardless.</p>
+    <p><strong>Source.</strong> Snyk and TechSpot reporting on jqwik 1.10.0, May 25, 2026.</p>
+    <p><strong>Next.</strong> Where to put the boundary.</p>
   </aside>
 </section>
 
@@ -963,10 +1072,12 @@
   </div>
   <p class="footnote">Credentials should never live inside the sandbox. Inject them at the network boundary so a hijacked agent has nothing to exfiltrate. The third mode is the cheapest to adopt and the weakest.</p>
   <aside class="notes">
-    Left: the whole harness runs inside one boundary. Nothing it does escapes, which is why this is the default for laptops and CI.
-    Middle: the agent loop runs on a platform and each execution step gets a disposable sandbox. The agent can survive an execution failure, and execution never sees agent state.
-    Right: the loop runs with full access and only generated code is isolated. Many frameworks stop here. If the loop is hijacked, the host is exposed.
-    On credentials, a proxy can substitute real values on outbound requests so the sandbox only ever holds placeholders. Claude Code's sandbox proxy supports masking like this, and OpenShell routes inference calls and injects keys at the boundary.
+    <p><strong>Say.</strong> Three places to put a sandbox, with three different failure domains.</p>
+    <p><strong>Left.</strong> The whole harness runs inside one boundary. Nothing it does escapes. This is the usual choice for laptops and CI.</p>
+    <p><strong>Middle.</strong> The agent loop runs on a platform and each execution step gets a disposable sandbox. The agent can survive an execution failure, and execution never sees agent state.</p>
+    <p><strong>Right.</strong> The loop runs with full access and only generated code is isolated. Many frameworks stop here. If the loop is hijacked, the host is exposed.</p>
+    <p><strong>Credentials.</strong> Never inside the sandbox. A proxy can substitute real values on outbound requests so the sandbox holds only placeholders. Claude Code's sandbox proxy supports credential masking like this, and OpenShell injects keys at the boundary.</p>
+    <p><strong>Next.</strong> How real harnesses compare.</p>
   </aside>
 </section>
 
@@ -988,10 +1099,10 @@
   </table>
   <p class="footnote">Defaults change fast. Read each project's current documentation, then test the boundary itself, not the config file.</p>
   <aside class="notes">
-    The column that matters is "what enforces it". A prompt asks the model's operator. An OS sandbox or a container stops the process regardless of what the model wants.
-    Claude Code has an escape hatch that retries a failed command outside the sandbox. It goes back through the permission flow, and you can disable it. Codex's most permissive mode removes enforcement entirely, so watch for it in scripts.
-    OpenCode's rules are a policy profile. Hermes makes a deliberate trade: it skips approvals inside containers because the container is the boundary. That is only safe if the container really is one.
-    Verified against each project's documentation in September 2026.
+    <p><strong>Say.</strong> The column that matters is 'what enforces it'. A prompt asks the operator. An OS sandbox or a container stops the process whatever the model wants.</p>
+    <p><strong>Walk down.</strong> Claude Code has an optional OS sandbox for Bash. An escape hatch retries a failed command outside it, goes back through the permission flow, and can be disabled. Codex's most permissive mode removes enforcement entirely, so watch for it in scripts and CI. OpenCode's rules are a policy layer, most default to allow, and its docs describe no sandbox. OpenClaw separates sandbox, tool policy, and an elevated escape hatch. Hermes skips approvals inside container backends on purpose, which is only safe if the container really is a boundary.</p>
+    <p><strong>Careful.</strong> Do not say any of these is insecure. Say which layer enforces what, and what to verify. Defaults change fast. Re-check each project's docs before you present. This table was verified in September 2026.</p>
+    <p><strong>Next.</strong> Layering the boundary.</p>
   </aside>
 </section>
 
@@ -1037,10 +1148,13 @@
   </div>
   <p class="footnote">Source: published test of OpenCode with an open-weight model on Kubernetes, using OpenShell and Kata Containers (Red Hat Developer, July 23, 2026). One agent, one test. Treat it as a pattern, not a benchmark.</p>
   <aside class="notes">
-    Two threat classes do not overlap. Prompt injection turns into exfiltration over an ordinary network call, which a microVM does not inspect. A kernel exploit bypasses user-space policy entirely, which an egress proxy does not stop.
-    In the published test each single layer lost to the attack in its blind spot, and only the combination stopped both.
-    Container isolation can be enough for an agent with a narrow service account, known endpoints, human approval for novel actions, and no writes to systems of record. Move to kernel isolation when the agent runs arbitrary code, holds broad credentials, or acts on sensitive data. Kernel isolation still needs correct network and resource limits.
-    Inspect's default compose config sets network_mode none, which is the right instinct for evaluation runs.
+    <p><strong>Say.</strong> Two threat classes do not overlap. Prompt injection turns into exfiltration over an ordinary network call, which a microVM does not inspect. A kernel exploit bypasses user-space policy entirely, which an egress proxy does not stop.</p>
+    <p><strong>Point to.</strong> The table. In the published test each single layer lost to the attack in its blind spot. Only the combination stopped both.</p>
+    <p><strong>Say.</strong> It is one agent and one test. Treat it as a pattern, not a benchmark.</p>
+    <p><strong>When is container isolation enough.</strong> A narrow service account, known endpoints, human approval for novel actions, and no writes to systems of record. Move to kernel isolation when the agent runs arbitrary code, holds broad credentials, or acts on sensitive data. Kernel isolation still needs correct network and resource limits.</p>
+    <p><strong>Evaluation runs too.</strong> Red-team and evaluation runners execute hostile content as well. Give them the same stack. Inspect's default compose config sets network_mode none, which is the right instinct.</p>
+    <p><strong>Source.</strong> Red Hat Developer, July 23, 2026: OpenCode with an open-weight model on Kubernetes, using OpenShell and Kata Containers.</p>
+    <p><strong>Next.</strong> Now test the boundary between the harness and its tools.</p>
   </aside>
 </section>
 
@@ -1086,9 +1200,11 @@
   </div>
   <p class="footnote">The agent does not change and does not know. You test the real harness and model, not a copy. Open-source examples: MiDojo (MCP and other agent protocols) and AgentDojo (rebuilds the environment inside the framework).</p>
   <aside class="notes">
-    Replace the real tool with a stand-in that sits in the path. For each call it can forward to the real tool, splice a payload into the result, change the tool list or descriptions, or capture the call without executing its side effects.
-    The grader scores two things independently: did the agent finish its legitimate task, and did it resist the attack. Then it checks reachability: if the payload never arrived, the run is not applicable.
-    The advantage over copy-based benchmarks is that you are testing the actual harness, model, prompts, and sandbox you ship.
+    <p><strong>Say.</strong> Replace the real tool with a stand-in that sits in the path. For each call it can forward to the real tool, splice a payload into the result, change the tool list or descriptions, or record the call without running its side effects.</p>
+    <p><strong>Then.</strong> The grader scores two things independently: did the agent finish its task, and did it resist the attack. Then it checks reachability. If the payload never arrived, the run is not applicable.</p>
+    <p><strong>Say.</strong> The advantage over copy-based benchmarks is that you test the actual harness, model, prompts, and sandbox you ship. The agent does not change and does not know.</p>
+    <p><strong>Source.</strong> MiDojo is open source and supports MCP and other agent protocols. AgentDojo, from ETH Zurich, rebuilds the agent's environment inside the framework.</p>
+    <p><strong>Next.</strong> The boundary has two directions.</p>
   </aside>
 </section>
 
@@ -1109,9 +1225,11 @@
   </table>
   <p class="footnote">Attack classes on the left: tool poisoning, rug pull, tool shadowing. On the right: confused deputy, token passthrough, over-broad scopes, as covered in the MCP security best practices.</p>
   <aside class="notes">
-    Most MCP testing only looks left: hostile content flowing into the agent. The right side matters just as much, because an injected agent is a compromised caller.
-    If a tool server trusts the agent for authorization, then prompt injection is an authorization bypass. The fix belongs in the server, not in a better system prompt.
-    Tool poisoning hides instructions in descriptions. A rug pull changes a definition after the user approved it. Shadowing lets one server's description steer how the agent calls a different server.
+    <p><strong>Say.</strong> Most MCP testing only looks left: hostile content flowing into the agent. The right side matters just as much, because an injected agent is a compromised caller.</p>
+    <p><strong>Left column.</strong> Tool poisoning hides instructions in descriptions. A rug pull changes a definition after the user approved it. Shadowing lets one server's description steer how the agent calls a different server.</p>
+    <p><strong>Right column.</strong> If a tool server trusts the agent for authorization, prompt injection becomes an authorization bypass. The fix belongs in the server, not in a better system prompt.</p>
+    <p><strong>Source.</strong> The MCP security best practices cover confused deputy, token passthrough, and scope minimization.</p>
+    <p><strong>Next.</strong> How to read the results.</p>
   </aside>
 </section>
 
@@ -1144,9 +1262,11 @@
   </div>
   <p class="footnote">The output is a risk profile: for this model, harness, sandbox, and tool set, these vectors succeeded at this rate, and this control moved it.</p>
   <aside class="notes">
-    This is an ablation design. If you add three controls at once and attack success drops, you do not know which one mattered, or whether one of them just broke the task.
-    Vary one thing per run and keep the attack suite fixed. The delta is the measured value of that control in your environment.
-    Pin versions, because a harness update or a model swap changes the profile as much as a control does.
+    <p><strong>Optional.</strong> Skip if you are short on time. The talk still works without it.</p>
+    <p><strong>Say.</strong> This is an ablation design. If you add three controls at once and attack success drops, you do not know which one mattered, or whether one just broke the task.</p>
+    <p><strong>How.</strong> Vary one thing per run and keep the attack suite fixed. The difference is the measured value of that control in your environment. Pin versions, because a harness update or a model swap changes the profile as much as a control does.</p>
+    <p><strong>Point to.</strong> The attacker knowledge table. Black box is the user prompt. Gray box is a data source the agent reads. White box is a tool response the attacker controls.</p>
+    <p><strong>Next.</strong> Feeding production failures back in.</p>
   </aside>
 </section>
 
@@ -1199,9 +1319,11 @@
   </div>
   <p class="footnote">Hash or drop content you cannot retain. Record provenance on every case: source trace, transformation, reviewer.</p>
   <aside class="notes">
-    The sessions that went wrong are the best source of new tests, but a raw trace is missing things a test needs: a declared context, a defined correct outcome, a clean schema.
-    The five gates make a trace-derived case trustworthy evidence instead of noise. The last gate is a person.
-    Privacy review sits in the transform step. If you cannot keep the content, keep a hash and the structure, and note it in provenance.
+    <p><strong>Optional.</strong> Skip if you are short on time. The talk still works without it.</p>
+    <p><strong>Say.</strong> The sessions that went wrong are the best source of new tests. But a raw trace is missing things a test needs: a declared context, a defined correct outcome, a clean schema.</p>
+    <p><strong>Point to.</strong> The five gates: input present, context declared, outcome defined, schema passes, and a human reviewer approves. They turn a trace into evidence instead of noise.</p>
+    <p><strong>Privacy.</strong> The transform step is where privacy review sits. If you cannot keep the content, keep a hash and the structure, and note it in the provenance.</p>
+    <p><strong>Next.</strong> How often to run all of this.</p>
   </aside>
 </section>
 
@@ -1260,9 +1382,10 @@
   </div>
   <p class="footnote">Run cheap suites on every change. Run expensive adaptive campaigns on a schedule. Keep the suite itself versioned, or a trend line means nothing.</p>
   <aside class="notes">
-    A red-team result expires. The model, the harness, the tool servers, the prompts, and the attack literature all move.
-    Wire the same pinned suite to change triggers and to a schedule. Store every result with its configuration so you can plot attack success per surface over time and gate a release on it.
-    Keep the suite versioned. If the suite changes between runs, a rising or falling line tells you nothing.
+    <p><strong>Say.</strong> A red-team result expires. The model, the harness, the tool servers, the prompts, and the attack literature all move.</p>
+    <p><strong>Walk the diagram.</strong> Seven triggers feed the same pinned suite: changes to the model, harness, tools, prompts and guardrails, new attack research, production incidents, and a schedule. Results are versioned. You plot attack success per surface over time and gate the release on it.</p>
+    <p><strong>Say.</strong> Run cheap suites on every change. Run expensive adaptive campaigns on a schedule. Keep the suite versioned, or a trend line means nothing.</p>
+    <p><strong>Next.</strong> The loop that ties it together.</p>
   </aside>
 </section>
 
@@ -1300,6 +1423,12 @@
       <text class="box-sub" x="450" y="267" text-anchor="middle" style="font-size:14px">research-triggered</text>
     </svg>
   </div>
+  <aside class="notes">
+    <p><strong>Say.</strong> This is the whole talk as one loop. Red team, guardrail, regression suite, production monitoring, and back to the red team.</p>
+    <p><strong>Point to.</strong> The three labels: laps are started by events, by a schedule, and by new research. They match the triggers on the last slide.</p>
+    <p><strong>Say.</strong> Mitigation is not a terminal state. If the architecture does not include the re-test loop, it will not happen.</p>
+    <p><strong>Next.</strong> Takeaways.</p>
+  </aside>
 </section>
 
 <!-- SLIDE 33: Takeaways -->
@@ -1314,52 +1443,33 @@
   </ul>
   <p class="footnote">This field is younger than it looks. Most of what "good" looks like is still being figured out in public.</p>
   <aside class="notes">
-    Close on the loop. Ask the room which of the four they can start on Monday. The cheapest first step is usually the regression suite plus a scheduled run.
+    <p><strong>Say.</strong> Four things. Attacks live in the trajectory, so test the whole path. Every finding becomes a regression test tied to a retained trace. The harness and its tool boundary are part of the system under test, so a permission prompt is policy and a sandbox is the boundary. And mitigation has no finish line, so the risk profile is a series, not a snapshot.</p>
+    <p><strong>Ask the room.</strong> Which of the four can you start on Monday? The cheapest first step is usually the regression suite plus a scheduled run.</p>
+    <p><strong>Next.</strong> The last slide has the links.</p>
   </aside>
 </section>
 
-<!-- SLIDE 34: Open the deck online -->
+<!-- SLIDE 34: Follow along and connect -->
 <section>
   <div class="kicker">Follow along</div>
-  <h2>Open this deck on your own device</h2>
-  <div class="two-col" style="align-items:center; margin-top:0.6em;">
-    <div style="flex:0 0 auto;">
+  <h2>Open the deck and connect with me</h2>
+  <div class="two-col qr-pair">
+    <div class="qr-card">
+      <p class="qr-label">Open this deck</p>
       <div class="qr-panel"><svg role="img" aria-label="QR code linking to the online presentation" shape-rendering="crispEdges" viewBox="0 0 33 33" class="segno"><path class="qrline" stroke="#141a24" d="M0 0.5h7m3 0h1m2 0h1m2 0h1m1 0h4m1 0h1m2 0h7m-33 1h1m5 0h1m2 0h2m2 0h4m4 0h1m4 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m3 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m2 0h4m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h2m3 0h5m2 0h2m4 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h1m1 0h1m1 0h2m3 0h4m-23 1h1m1 0h5m2 0h1m3 0h1m1 0h1m1 0h1m4 0h1m1 0h1m1 0h5m-31 1h6m1 0h3m1 0h2m3 0h4m3 0h1m2 0h2m1 0h4m-33 1h2m1 0h1m1 0h3m1 0h4m2 0h1m1 0h1m3 0h2m1 0h1m3 0h1m1 0h1m-31 1h2m1 0h3m4 0h1m1 0h1m1 0h1m1 0h1m1 0h5m3 0h1m1 0h3m1 0h1m-32 1h1m2 0h1m1 0h3m1 0h1m1 0h1m4 0h1m1 0h1m2 0h4m2 0h2m1 0h1m-32 1h4m4 0h3m1 0h1m1 0h4m1 0h2m2 0h1m2 0h1m3 0h3m-32 1h10m1 0h1m5 0h1m1 0h3m1 0h3m2 0h3m-32 1h3m1 0h2m3 0h1m1 0h1m2 0h1m1 0h1m4 0h2m2 0h2m1 0h1m1 0h1m-26 1h2m1 0h2m2 0h1m4 0h1m4 0h1m1 0h2m1 0h3m2 0h1m-33 1h1m1 0h1m1 0h1m2 0h5m2 0h1m4 0h2m2 0h1m1 0h3m1 0h4m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h2m2 0h1m4 0h2m2 0h2m1 0h2m1 0h1m-31 1h3m1 0h2m2 0h2m1 0h1m2 0h1m3 0h1m2 0h2m2 0h1m1 0h4m1 0h1m-30 1h1m2 0h2m1 0h3m1 0h1m1 0h1m1 0h1m4 0h2m1 0h1m1 0h3m-30 1h6m1 0h2m1 0h1m1 0h1m2 0h1m3 0h3m1 0h1m2 0h2m2 0h1m1 0h1m-33 1h1m1 0h5m1 0h1m1 0h2m1 0h3m4 0h1m4 0h1m4 0h2m-32 1h1m3 0h1m2 0h1m1 0h1m1 0h1m2 0h2m2 0h1m1 0h3m2 0h3m2 0h2m-32 1h1m3 0h1m1 0h1m1 0h1m1 0h2m3 0h1m1 0h1m1 0h1m2 0h8m2 0h1m-25 1h2m1 0h1m1 0h2m1 0h1m1 0h3m3 0h1m3 0h1m1 0h3m-33 1h7m5 0h1m1 0h5m3 0h3m1 0h1m1 0h1m1 0h1m-31 1h1m5 0h1m1 0h4m3 0h2m2 0h1m1 0h1m1 0h2m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h1m4 0h1m1 0h2m3 0h1m1 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h2m1 0h3m1 0h1m1 0h3m2 0h1m1 0h3m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h3m1 0h1m1 0h2m4 0h2m2 0h1m-31 1h1m5 0h1m5 0h1m1 0h1m1 0h1m1 0h5m2 0h1m2 0h1m1 0h1m-31 1h7m1 0h3m5 0h2m4 0h1m1 0h1m2 0h1m1 0h1m1 0h1"/></svg></div>
-    </div>
-    <div style="flex:1;">
       <p class="qr-url">williamcaban.github.io/261001-red-teaming-agents</p>
-      <ul class="tight">
-        <li>Works on phones and laptops. Swipe or use the arrow keys.</li>
-        <li>Press <span class="mono">F</span> for full screen and <span class="mono">S</span> for speaker notes.</li>
-        <li>Source: <span class="mono" style="font-size:0.8em;">github.com/williamcaban/261001-red-teaming-agents</span></li>
-      </ul>
     </div>
-  </div>
-  <aside class="notes">
-    Leave this up while people scan. The deck is a single static page, so it loads fast on conference wifi. The speaker notes carry the reasoning behind each slide.
-  </aside>
-</section>
-
-<!-- SLIDE 35: Connect on LinkedIn -->
-<section>
-  <div class="kicker">Stay in touch</div>
-  <h2>Connect with me on LinkedIn</h2>
-  <div class="two-col" style="align-items:center; margin-top:0.6em;">
-    <div style="flex:0 0 auto;">
+    <div class="qr-card">
+      <p class="qr-label">Connect on LinkedIn</p>
       <div class="qr-panel"><svg role="img" aria-label="QR code linking to William Caban on LinkedIn" shape-rendering="crispEdges" viewBox="0 0 29 29" class="segno"><path class="qrline" stroke="#141a24" d="M0 0.5h7m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m3 0h7m-29 1h1m5 0h1m2 0h1m1 0h4m2 0h2m1 0h1m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m3 0h4m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m3 0h2m3 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m7 0h3m1 0h1m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h2m7 0h3m-21 1h1m1 0h1m3 0h2m1 0h2m1 0h5m3 0h1m2 0h1m2 0h1m1 0h1m-27 1h3m5 0h1m1 0h2m1 0h2m1 0h2m2 0h2m3 0h2m-28 1h1m2 0h1m1 0h2m1 0h1m1 0h2m2 0h2m2 0h1m2 0h1m2 0h2m1 0h1m-29 1h2m1 0h2m6 0h3m1 0h1m2 0h1m1 0h2m2 0h2m-24 1h1m2 0h3m5 0h1m1 0h2m3 0h1m1 0h2m4 0h1m-28 1h3m1 0h1m5 0h1m3 0h3m1 0h2m1 0h2m3 0h2m-29 1h2m2 0h3m3 0h2m1 0h3m1 0h3m2 0h2m4 0h1m-28 1h2m4 0h1m1 0h1m1 0h2m1 0h1m3 0h3m2 0h2m-23 1h1m3 0h2m1 0h1m2 0h5m3 0h1m1 0h2m4 0h1m-26 1h1m1 0h1m3 0h1m1 0h7m1 0h2m1 0h2m2 0h3m-29 1h4m1 0h4m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m2 0h2m2 0h1m-27 1h3m3 0h1m4 0h1m1 0h1m3 0h1m1 0h1m2 0h1m-25 1h3m2 0h3m1 0h3m1 0h1m1 0h2m2 0h7m1 0h1m-20 1h2m5 0h3m2 0h1m3 0h3m1 0h1m-29 1h7m1 0h2m2 0h4m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1m-29 1h1m5 0h1m3 0h1m3 0h1m1 0h1m2 0h2m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m3 0h5m1 0h1m2 0h7m2 0h1m-29 1h1m1 0h3m1 0h1m2 0h2m2 0h5m2 0h2m2 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m1 0h2m1 0h1m1 0h2m2 0h1m2 0h1m2 0h2m-29 1h1m5 0h1m3 0h4m4 0h1m1 0h3m2 0h1m-26 1h7m1 0h2m1 0h1m3 0h2m2 0h3m3 0h1m2 0h1"/></svg></div>
-    </div>
-    <div style="flex:1;">
-      <p class="qr-name">William Caban</p>
       <p class="qr-url">linkedin.com/in/williamcaban</p>
-      <ul class="tight">
-        <li>Scan to open my profile and send a connection request.</li>
-        <li>Mention Mass Open in the note so I know where we met.</li>
-        <li>Counterexamples and field stories are the most useful messages.</li>
-      </ul>
     </div>
   </div>
+  <p class="footnote">Swipe or use the arrow keys on your own device. Mention Mass Open when you connect.</p>
   <aside class="notes">
-    Close here. Invite people to connect and to send what they have seen work or fail in their own agent deployments.
+    <p><strong>Say.</strong> Scan the left code to open this deck on your own device, with the speaker notes and the sources behind each claim. Scan the right code to connect with me on LinkedIn.</p>
+    <p><strong>Say.</strong> Mention Mass Open when you connect so I know where we met. The most useful messages are counterexamples and field stories from your own agent deployments.</p>
+    <p><strong>During Q&A.</strong> Leave this slide up. The deck is a single static page and loads fast on conference wifi.</p>
   </aside>
 </section>
 </div>
@@ -1392,7 +1502,8 @@
     var root = document.documentElement;
     var request = root.requestFullscreen || root.webkitRequestFullscreen;
     if (!btn) return;
-    if (!request) { btn.hidden = true; return; }
+    // Hide in embedded views such as the speaker-view previews, and where the API is missing.
+    if (!request || window.self !== window.top) { btn.hidden = true; return; }
     function isFull() { return document.fullscreenElement || document.webkitFullscreenElement; }
     function sync() { btn.hidden = !!isFull(); }
     btn.addEventListener('click', function () { request.call(root); });
