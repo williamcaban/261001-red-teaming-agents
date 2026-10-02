@@ -169,10 +169,10 @@ works) before pushing. Style the URL, name, and label lines with
 classes.
 
 Speaker notes are written for a presenter, not for the audience. Every slide
-has an `<aside class="notes">` block made of short labeled paragraphs in this
-order: Say, then Show or Point to, then Ask the room or If asked, then Source
-where a fact comes from outside, then Next for the hand-off to the following
-slide. Slides that can be cut for time start with an Optional paragraph, and
+has an `<aside class="notes">` block. The spoken script is plain, unlabeled
+paragraphs (do not add a "Say." label). Anything else gets a bold label: Show
+or Point to, Ask the room or If asked, Source where a fact comes from
+outside, and Next for the hand-off to the following slide. Slides that can be cut for time start with an Optional paragraph, and
 the title slide's notes list which ones (8, 14, 21, 29, 30). Update that list
 when you add, remove, or renumber slides. Do not put internal material or
 unverified claims in notes. The source is public.
