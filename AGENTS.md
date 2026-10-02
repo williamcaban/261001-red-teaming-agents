@@ -85,8 +85,11 @@ you also need to find-and-replace the literal hex strings inside every
   is genuinely a 3-item sequence.
 - When citing open-source tools (garak, promptfoo, NeMo Guardrails, EvalHub,
   etc.), keep claims about what they do current — this space moves fast
-  (e.g. PyRIT was archived by Microsoft in March 2026; promptfoo joined
-  OpenAI in March 2026 but stayed MIT-licensed). Verify before stating
+  (e.g. promptfoo joined OpenAI in March 2026 but stayed MIT-licensed).
+  An earlier version of this note said PyRIT was archived by Microsoft in
+  March 2026. That is wrong: checked against the repo on 2026-10-01, it is
+  not archived, is MIT-licensed, had commits every month of 2026, and
+  released v1.1.0 in September 2026. Verify before stating
   anything time-sensitive about a tool's status, ownership, or license.
 - This deck is intentionally vendor-neutral/open-source-grounded, not a
   product pitch. Content pulled from internal Red Hat material (roadmap
